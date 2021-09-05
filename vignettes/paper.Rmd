@@ -49,7 +49,7 @@ astasis.
 
 ```{r, eval = FALSE}
 # commands for installing the package
-devtools::install_github("Aitorzan3/GeRnika")
+devtools::install_github("Aitorzan3/GeRnika", build_vignettes = TRUE)
 ```
 Once installed, the namespace of `GeRnika` may be loaded by attaching it:
 
