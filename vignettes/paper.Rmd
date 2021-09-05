@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 # Summary
 ```{r, echo = FALSE, fig.width = 2, fig.height=2, message = FALSE, warning = FALSE}
 
-install.packages(c("devtools", "png", "grid"))
+#install.packages(c("devtools", "png", "grid"))
 #logo <- system.file("extdata", "GeRnika.png", package = "GeRnika")
 #library(devtools)
 #library(png)
