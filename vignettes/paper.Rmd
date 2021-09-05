@@ -28,12 +28,12 @@ knitr::opts_chunk$set(
 # Summary
 ```{r, echo = FALSE, fig.width = 2, fig.height=2, message = FALSE, warning = FALSE}
 
-logo <- system.file("extdata", "GeRnika.png", package = "GeRnika")
-library(devtools)
-library(png)
-library(grid)
-img <- readPNG(logo)
- grid.raster(img)
+#logo <- system.file("extdata", "GeRnika.png", package = "GeRnika")
+#library(devtools)
+#library(png)
+#library(grid)
+#img <- readPNG(logo)
+#grid.raster(img)
 ```
 
 
@@ -47,7 +47,7 @@ Cancer is a genetic disease based on the uncontrollable division of cells and th
 
 ```{r, eval = FALSE}
 # commands for installing the package
-devtools::install_github("Aitorzan/GeRnika")
+devtools::install_github("Aitorzan3/GeRnika")
 ```
 Once installed, the namespace of `GeRnika` may be loaded by attaching it:
 
@@ -69,8 +69,8 @@ Following the above, `GeRnika` offers **accesible** methods for simulating and a
 # References
 
 ```{r generateBibliography,echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
-require("knitcitations")
-cleanbib()
-options("citation_format" = "pandoc")
+#require("knitcitations")
+#cleanbib()
+#options("citation_format" = "pandoc")
 ```
 
