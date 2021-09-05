@@ -5,10 +5,7 @@ bibliography: references.bibtex
 nocite: | 
           @1, @7, @8, @9, @10
 date:  "`r Sys.Date()`"
-output: 
-  pdf_document: 
-    keep_tex: yes
-always_allow_html: true
+output: rmarkdown::html_vignette
 vignetteBuilder: knitr
 vignette: >
   %\VignetteIndexEntry{Welcome to GeRnika}
@@ -31,8 +28,10 @@ knitr::opts_chunk$set(
 # Summary
 ```{r, echo = FALSE, fig.width = 2, fig.height=2, message = FALSE, warning = FALSE}
 
+
+
 #install.packages(c("devtools", "png", "grid"))
-#logo <- system.file("extdata", "GeRnika.png", package = "GeRnika")
+logo <- devtools::system.file("extdata", "GeRnika.png", package = "GeRnika")
 #library(devtools)
 #library(png)
 #library(grid)
