@@ -28,16 +28,18 @@ knitr::opts_chunk$set(
 # Summary
 ```{r, echo = FALSE, fig.width = 2, fig.height=2, message = FALSE, warning = FALSE}
 
-#logo <- system.file("extdata", "GeRnika.png", package = "GeRnika")
-#library(devtools)
-#library(png)
-#library(grid)
-#img <- readPNG(logo)
-#grid.raster(img)
+install.packages(c("devtools", "png", "grid"))
+logo <- system.file("extdata", "GeRnika.png", package = "GeRnika")
+library(devtools)
+library(png)
+library(grid)
+img <- readPNG(logo)
+grid.raster(img)
 ```
 
 
-Cancer is a genetic disease based on the uncontrollable division of cells and their spreading into surrounding tissues, caused by changes in DNA. Nevertheless, all the cells in a particular tumor do not have the same characteristics as this is formed by diverse clones with different mutations, and therefore different properties and behaviour. As a consequence, this intratumoral heterogenity entails a problem in regard to the diagnosis and the medical treatments that can help to manage the disease, resulting in the failure of therapies and the possible propagation of carcinogenic cells to other organs or tissues, which is known as metastasis. 
+Cancer is a genetic disease based on the uncontrollable division of cells and their spreading into surrounding tissues, caused by changes in DNA. Nevertheless, all the cells in a particular tumor do not have the same characteristics as this is formed by diverse clones with different mutations, and therefore different properties and behaviour. As a consequence, this intratumoral heterogenity entails a problem in regard to the diagnosis and the medical treatments that can help to manage the disease, resulting in the failure of therapies and the possible propagation of carcinogenic cells to other organs or tissues, which is known as met
+astasis. 
 
 `GeRnika` aims at providing a tool to help researchers to easily simulate tumor data and analyze the results of their approaches for studying the composition and the evolutionary history of tumors. `GeRnika` is expected to be useful for researches related to the solution of the *Clonal Deconvolution and Evolution Problem* (CDEP) and the analysis of tumor phylogenies, contributing to investigations in the field of oncology.
 
