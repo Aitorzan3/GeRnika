@@ -5,7 +5,10 @@ bibliography: references.bibtex
 nocite: | 
           @1, @7, @8, @9, @10
 date:  "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  pdf_document: 
+    keep_tex: yes
+always_allow_html: true
 vignetteBuilder: knitr
 vignette: >
   %\VignetteIndexEntry{Welcome to GeRnika}
