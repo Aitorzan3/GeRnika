@@ -1,0 +1,532 @@
+---
+title: "Usage of GeRnika"
+author: "Aitor Sánchez, Borja Calvo and Maitena Tellaetxe"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignetteBuilder: knitr
+vignette: >
+  %\VignetteIndexEntry{Usage of GeRnika}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+# Introduction
+
+This is a demo for using the `GeRnika` package in R. This document contains examples to help any user to understand the usage of the functionalities offered by the package, which include the simulation of tumor data, the visualization of its phylogenetic tree and the comparison of tumor phylogenies.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(GeRnika)
+library(ggpubr)
+```
+
+# Step 1: Simulating tumor data
+
+Each instance of a tumor's simulation consists of a matrix $F$ containing mutation frequency values in a set of samples. In order to build $F$, we will be using a matrix $B$, representing the phylogeny of the tumor, and a matrix $U$, which contains the clone proportions in each particular sample of that tumor.
+
+Tumors can be simulated through the *create_instance* function. The information about its parameters and their usage may be checked in the following table:
+
+| Parameter        | Description                                                | Type |
+| ---------------- | ---------------------------------------------------------- | ----------------- |
+| n                | Number of clones                                           |  Discrete No. |
+| m                | Number of samples                                          |  Discrete No. |
+| k                | How branchy the topology is                                    |  Continuous No.      |
+| selection        | The evolution model followed by the tumor     | "positive","neutral" |
+| noise            | Whether noise is added to the error-free VAF values or not (optional, TRUE by default) | TRUE or FALSE |
+| sequencing depth | the average number of reads that map to the same locus (for noisy cases, 30.0 by default)                        |  Continuous No. |
+
+
+Following, this is an example of the instantiation of a tumor composed by 5 nodes and 4 samples (setting $k$=0.5 and a "neutral" evolutionary model):
+
+```{r message = FALSE, echo = FALSE}
+I <- create_instance(n=5, m=4, k=0.5, selection="neutral", seed=1)
+```
+
+```{r message = FALSE, eval = FALSE}
+I <- create_instance(n=5, m=4, k=0.5, selection="neutral")
+```
+
+As a result, these method returns the previously mentioned $F$, $B$ and $U$ matrices and an additional $F\_true$ matrix, which we will describe later.
+
+Once we have shown an example of the instantiation of a tumor, we will analyze the effect of changing the values of the parameters used for its simulation.
+
+## The effect of $k$
+
+$k$ is the parameter that determines whether the topology of a simulated tumor is more or less branched. As a result, higher $k$ values will lead to tumors represented by branchy phylogenetic trees, while lower values of $k$ will produce tumors with more linear phylogenetic trees.
+
+The effect of bigger and smaller values for $k$ on the phylogenetic tree of a simulated tumor is presented below. In order to show the effect of this parameter, we will use `Phylotree` S4 class objects (whose usage will be introduced thereupon):
+
+```{r, message = FALSE, eval = FALSE}
+# Create an instance of a tumor with k=0:
+I1 <- create_instance(n=5, m=4, k=0, selection="neutral")
+
+# Create an instance of a tumor with k=2:
+I2 <- create_instance(n=5, m=4, k=2, selection="neutral")
+
+# Create a `Phylotree` class object on the basis of each instance:
+tree1 <- B_to_phylotree(B=I1$B)
+tree2 <- B_to_phylotree(B=I2$B)
+
+# Plot both trees to check the differences between them:
+plot(tree1)
+plot(tree2)
+```
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align ="center", fig.dim = c(6.5,6), fig.cap="The effect of parameter $K$." }
+# Create an instance of a tumor with k=0:
+I1 <- create_instance(n=5, m=4, k=0, selection="neutral", seed = 1)
+
+# Create an instance of a tumor with k=1:
+I2 <- create_instance(n=5, m=4, k=2, selection="neutral", seed = 1)
+
+# Create a `Phylotree` class object on the basis of each instance:
+tree1 <- B_to_phylotree(B=I1$B)
+tree2 <- B_to_phylotree(B=I2$B)
+
+# Plot both trees to check the differences between them:
+render_graph(combine_graphs(ToDiagrammeRGraph(tree1@tree), ToDiagrammeRGraph(tree2@tree)))
+```
+
+Following the above, it is visible that the tree on the left ($Tree1$) is totally
+branchy as it is composed by a root connected to all the leaves of the
+tree. On the right side we can see a linear tree ($Tree2$), whose structure is conformed by two main branches.
+
+After analyzing the effect of parameter $k$ in the creation of a tumor
+instance, we will proceed to check the difference between the clonal subpopulations of tumors depending on the evolution model they follow.
+
+## The effect of the evolution type
+
+This parameter depends on the evolution model we assume is followed by the tumor, considering positive selection-driven evolution and neutral evolution. A positive selection-driven evolution model involves some mutations having a growth advantage compared to others. Conversely, neutral evolution models entail that no mutations provide fitness advantage and, therefore, different clone subpopulations are present in similar proportions.
+
+These parameters influences the proportions of the different clone subpopulations in the tumor, contained in its $\boldsymbol{U}$ matrix. The effect of this parameter is described below:
+
+```{r, message = FALSE, echo = FALSE, warning = FALSE}
+U_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "clones", "proportion")){
+  Upos <-melt(U)
+  colnames(Upos) <- col_names
+  Var1 <- col_names[1]
+  Upos<-ggplot(Upos, aes(x=samples, y=clones, fill=proportion)) + geom_tile(col="black")+ scale_fill_gradient(limits=c(0.0000000000001, 1)) + theme(axis.title.x=element_blank(),
+        axis.ticks.x=element_blank(), 
+        axis.title.y=element_blank(),
+        axis.ticks.y=element_blank())
+  if(values){
+    Upos <- Upos + geom_text(aes(label=proportion), size=4)  
+  }
+  Upos
+}
+
+F_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "mutations", "VAF")){
+  Upos <-melt(U)
+  colnames(Upos) <- col_names
+  Var1 <- col_names[1]
+  Upos<-ggplot(Upos, aes(x=samples, y=mutations, fill=VAF)) + geom_tile(col="black")+ scale_fill_gradient(limits=c(0.00000000000000000001, 1)) + theme(axis.title.x=element_blank(),
+        axis.ticks.x=element_blank(), 
+        axis.title.y=element_blank(),
+        axis.ticks.y=element_blank())
+  if(values){
+    Upos <- Upos + geom_text(aes(label=round(VAF, digits = 2)), size=4)  
+  }
+  Upos
+}
+```
+
+```{r, message = FALSE, eval = FALSE}
+# Create an instance of a tumor with neutral selection:
+Ipos <- create_instance(n=5, m=8, k=0.5, selection="neutral")
+
+# Create an instance of a tumor with positive selection:
+Ineu <- create_instance(n=5, m=8, k=0.5, selection="positive")
+
+# Show the heatmaps of the U matrixes of our instances:
+U_to_heatmap(Ipos$U)
+U_to_heatmap(Ineu$U)
+```
+
+```{r, message = FALSE, echo = FALSE,  warning = FALSE, fig.align ="center", fig.dim = c(7.5,8), fig.cap="The effect of the selection type."}
+# Create an instance of a tumor with neutral selection:
+Ipos <- create_instance(n=5, m=8, k=0.5, selection="neutral", seed = 1)
+
+# Create an instance of a tumor with positive selection:
+Ineu <- create_instance(5,8,0.5,"positive", seed = 1)
+
+Upos <- U_to_heatmap(Ipos$U)
+Uneu <- U_to_heatmap(Ineu$U)
+
+ggarrange(plotlist = list(Upos , Uneu), ncol = 1, nrow = 2)
+```
+
+The $U$ matrix of a simulated tumor instance represents the proportion of every clone subpopulation in each particular sample of the simulated tumor. The heatmaps from above are inspired on the $U$ matrices of two different generated instances. The first heatmap refers to the $U$ matrix of an instance with a neutral evolution and the second one to the $U$ matrix of an instance with a positive selection-driven evolution.
+
+Consequently, we may see that, even if all the different clone subpopulations are not present in similar proportions, almost all clones are present in all the samples of the tumor that follows a neutral evolution model. Conversely,
+the second heatmap presents that some clones take the biggest part of the tumor
+samples, as clone 3 provides a growth advantage whereas
+other clones do not. In addition, this second heatmap shows that there are clones that are missing in more than one tumor sample (For instance, the 5th clone is missing in all the samples of the tumor).
+
+Once we have analyzed the difference between the neutral and positive selection-driven evolution models, we will show the results of adding noise to our simulated tumor instances.
+
+## The effect of noise
+
+The aim of this process is to add sequencing noise to the error-free Variant Allele Frequency (VAF) values of our tumor instance, which are contained in the $F$ matrix. The original error-free VAF values are saved in the $F\_true$ matrix of the tumor instance.
+
+Now, we will show the difference between error-free and noisy instances by comparing their $F\_true$ and $F$ matrices:
+
+```{r, message = FALSE, eval = FALSE, warning = FALSE, fig.align ="center", fig.dim = c(7.5,8), fig.cap="caption"}
+# Create an instance of a tumor without added noise:
+Ifree <- create_instance(n=5, m=8, k=0.5, selection="neutral", noisy=FALSE)
+
+# Create an instance of a tumor with sequencing noise added:
+Inoisy <- create_instance(n=5, m=8, k=0.5, selection="positive", noisy=TRUE, depth=5.0)
+
+# Show the heatmaps of the difference between the F and F_true matrixes
+# of our instances:
+F_to_heatmap(abs(Ifree$F - Ifree$F_true))
+F_to_heatmap(abs(Inoisy$F - Inoisy$F_true))
+```
+
+```{r, message = FALSE, echo = FALSE, warning = FALSE, fig.align ="center", fig.dim = c(7.5,8), fig.cap="The effect of noise."}
+# Create an instance of a tumor without added noise:
+Ifree <- create_instance(5,8,0.5,"neutral",noisy = FALSE, seed = 1)
+
+# Create an instance of a tumor with sequencing noise added:
+Inoisy <- create_instance(5,8,0.5,"positive",noisy = TRUE,depth = 5.0, seed = 1)
+
+Ffree <- F_to_heatmap(abs(Ifree$F - Ifree$F_true))
+Fnoise <- F_to_heatmap(abs(Inoisy$F - Inoisy$F_true))
+
+ggarrange(plotlist = list(Ffree , Fnoise), ncol = 1, nrow = 2)
+```
+
+The heatmaps from above show the differences between the $F$ matrix and the $F\_true$ matrix of each instance, i.e. the noise added to the original VAF values of our tumor samples. The first heatmap presents that there is no difference between the values present in $F$ and $F\_true$, as it is the one that refers to the error-free instance. Contrarily, the second heatmap shows that the $F$ and $F\_true$ matrices contain different values, as a result of adding sequencing noise to the initial VAF values of our tumor instance.
+
+It is remarkable that the *create_intance* method allows users to control the sequencing read depth of a simulated instance, which has a direct influence on the resulting VAF values contained in its $F$ matrix.
+
+### The effect of the sequencing read depth
+
+The sequencing read depth is the average number of reads that map to the same locus (section of the genome). Therefore, higher values for this parameter will produce less noise than lower ones
+for the original VAF values of a tumor instance.
+
+See the evolution of the produced noise-error for instances with different depth values below. The first animation below present the progression of the error for an instance composed by 10 and 2 samples, while the second one shows the evolution of the error for an instance composed by 100 clones and 10 samples:
+
+
+```{r, echo = FALSE, out.width="100%", caption = "The evolution of the error in VAF values for an instance composed by 10 clones and 2 samples."}
+
+anim_1 <- system.file("extdata", "anim_10_2.gif", package = "GeRnika")
+
+knitr::include_graphics(c(anim_1), dpi=300)
+```
+<center>
+The evolution of the error in VAF values based on the read depth sequencing values for a tumor composed by 10 clones and 2 samples.
+</center>
+
+```{r, echo = FALSE, out.width="100%", caption = "The evolution of the error in VAF values for an instance composed by 100 clones and 10 samples."}
+
+anim_2 <- system.file("extdata", "anim_100_10.gif", package = "GeRnika")
+
+knitr::include_graphics(c(anim_2), dpi=300)
+```
+
+<center>
+The evolution of the error in VAF values based on the read depth sequencing values for tumors composed by 100 clones and 10 samples.
+</center>
+
+It is visible that both instances present a noise-error shrink as depth values get higher, whether they follow a neutral evolutionary selection or a positive-driven one. In addition, the noise-error of bigger instances converges faster than the error of smaller instances. However, the first animation shows that, even if the smaller instance needs higher values of depth to converge, it ends up producing minor errors.
+
+After analyzing the effect of the different parameters for creating a tumor instance, we will present the basis of the `Phylotree` S4 class.
+
+# Step 2: The `Phylotree` S4 class
+
+In this section, we will be using the `Phylotree` class for the purpose of inferring and visualizing phylogenetic trees on the basis of simulated tumor data. The `Phylotree` S4 class is a structure that provides facilities for constructing phylogenetic trees in order to analyze the evolutionary development of tumors. Now, we will show the composition of `Phylotree` class objects and the different techniques for instantiating them.
+
+## The structure of `Phylotree` class objects
+
+As every S4 class, the `Phylotree` class is composed by various attributes that are essential for building the phylogenetic tree of a particular tumor instance in an optimal way.
+
+The attributes of `Phylotree` class may be visualized in the following table:
+
+| Parameter        | Description                                                | Type |
+| ---------------- | ---------------------------------------------------------- | ----------------- |
+| B                | The square matrix containing the mutations of the clones in the tumor                                        |  Matrix |
+| clones                | The equivalence table of the clones in the $B$ matrix of the tumor                                          |  Vector |
+| genes                | The equivalence table of the genes in the tumor                                |  vector      |
+| parents        | The vector of the parents of the clones in the phylogenetic tree | vector
+| tree            | the `Node` structure that represents the phylogenetic tree | `Node` |
+| labels | The tags of the genes in the phylogenetic tree                    |  vector |
+
+Even if `Phylotree` class objects have quite a few attributes, the users of this package will not need to manipulate them as these exist only to reduce the computational cost of the visualization of phylogenetic trees and their comparison.
+
+Once we have explained the structure of `Phylotree` class objects, we will proceed to show the different ways for instantiating them.
+
+## The instantiation of `Phylotree` class objects
+
+The mutations of the clone subpopulations in a tumor sample are represented in a $n$ x $n$ binary clone genotype $B$ matrix. Each $b_{i}$ row of the $B$ matrix represents the mutations in clone $v_{i}$. We can analyze the ancestral relationships among the clones of tumors through their $B$ matrices in order to instantiate new `Phylotree` class objects.
+
+Now, we will show an example of the instantiation a `Phylotree` class object on the basis of the B matrix of the simulation of a tumor composed by 5 nodes:
+
+```{r, eval = FALSE}
+# The creation of an instance with 5 clones, 4 samples, K=0.5 and sequencing noise:
+instance <- create_instance(n=5, m=4, k=0.5, selection="positive", noisy=TRUE)
+
+# The creation of the Phylotree class object using the previously generated B matrix:
+phylotree <- B_to_phylotree(B=instance$B)
+```
+
+```{r, echo = FALSE}
+# The creation of an instance with 5 clones, 4 samples, K=0.5 and sequencing noise:
+instance <- create_instance(n=5, m=4, k=0.5, selection="positive", noisy=TRUE, seed = 1)
+
+# The creation of the Phylotree class object using the previously generated B matrix:
+phylotree <- B_to_phylotree(B=instance$B)
+```
+
+The *B_to_phylotree* method takes a $B$ matrix as an argument and calculates the values for the other attributes present in `Phylotree` class objects. After instantiating the new `Phylotree`  object, we can visualize it using the generic method *plot* for this class:
+
+```{r, fig.dim = c(7,5.5), fig.cap="Phylogenetic tree composed by 5 nodes."}
+plot(phylotree)
+```
+
+Nonetheless, this is not the only way for visualizing the phylogenetic tree of a tumor. Note that that this package allows its users to instantiate `Phylotree` class objects using tags for the names of the clones that compose its phylogenetic tree. This is an example about how this can be done:
+
+
+```{r}
+#Create a list with the tags we want to insert to the Phylotree class object 
+#(the length of the list must be equal to the number of clones in the phylogenetic tree):
+tags <- c("mut1", "mut2", "mut3", "mut4", "mut5")
+
+# Create the Phylotree class object inserting the tags we previously created:
+phylotree <- B_to_phylotree(B=instance$B, labels=tags)
+```
+
+After creating the `Phylotree` class object, we may render it using the tags we have previously assigned to the clones in the following way:
+
+```{r, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clone with tags."}
+plot(phylotree, labels=TRUE)
+```
+
+This is one of the possible methods for instantiating `Phylotree` class objects on the basis of the $B$ matrix of a tumor. However, this package also grants the option of using the general constructor for the `Phylotree` S4 class for instantiating new `Phylotree` objects, which allows users to give specific values to the attributes of a new `Phylotree` class object.
+
+Once we have shown the usage of the methods for instantiating `Phylotree` class objects and the procedures by these can be visualized, we will proceed to present the functions for comparing the phylogeny of different tumors.
+
+# Step 3: Comparing and combining different phylogenetic trees
+
+This package presents different functionalities for comparing the phylogeny of various phylogenetic trees. In order to show how these
+capabilities work, we will use the $B_mats dataset of the
+`GeRnika` package, which contains 10 trios of $B$ matrices based on the solution of various 
+instances of the Clonal Deconvolution and Evolution Problem given by the *ILS* and *GRASP* methods. This trios consist of the following matrices:
+
+- **B_true**: The real **$B$** matrix of a simulated tumor instance.
+- **B_Grasp**: The initial solution of the *ILS* for finding better solutions for the problem instance. This is generated employing a greedy randomized adaptive heuristic strategy.
+- **B_opt**: The optimal solution for the instance of the CDEP, obtained from the *ILS*.
+
+First, we will load the real B matrix of the simulated instance of a tumor and
+the B matrices given by the *ILS* and the *GRASP* method:
+
+```{r fig.align ="center", eval = FALSE, message = FALSE, warning = FALSE}
+# Load the predefined B matrices of the package:
+B_mats <- GeRnika::B_mats
+
+# Get the B matrices from B_mats for comparing them:
+B_real <- B_mats[[2]]$B_real
+B_grasp <- B_mats[[2]]$B_grasp
+B_opt <- B_mats[[2]]$B_opt
+
+# Create the list of the tags for the clones that compose the phylogenetic trees:
+tags <- c("mut1", "mut2", "mut3", "mut4", "mut5", "mut6", 
+            "mut7", "mut8", "mut9", "mut10")
+
+# Create the Phylotree class objects using the previously loaded B matrices:
+phylotree_real <- B_to_phylotree(B=B_real, labels=tags)
+phylotree_grasp <- B_to_phylotree(B=B_grasp, labels=tags)
+phylotree_opt <- B_to_phylotree(B=B_opt, labels=tags)
+
+
+# Render all trees:
+plot(phylotree_real)
+plot(phylotree_grasp)
+plot(phylotree_opt)
+
+```
+
+
+```{r fig.align ="center", echo = FALSE, fig.dim = c(8,8.75)}
+# Load the predefined B matrices of the package:
+B_mats <- GeRnika::B_mats
+
+# Get one of the B matrix trios to compare them:
+B_real <- B_mats[[2]]$B_real
+B_opt <- B_mats[[2]]$B_opt
+B_grasp <- B_mats[[2]]$B_grasp
+
+#Create the list of the tags for the clones that compose the phylogenetic trees:
+tags <- c("mut1", "mut2", "mut3", "mut4", "mut5", "mut6", 
+            "mut7", "mut8", "mut9", "mut10")
+
+#Create the Phylotree class objects using the previously loaded B matrices:
+phylotree_real <- B_to_phylotree(B_real, labels = tags)
+phylotree_opt <- B_to_phylotree(B_opt, labels = tags)
+phylotree_grasp <- B_to_phylotree(B=B_grasp, labels=tags)
+
+
+#Render both trees:
+render_graph(combine_graphs(ToDiagrammeRGraph(phylotree_real@tree),combine_graphs(ToDiagrammeRGraph(phylotree_grasp@tree),ToDiagrammeRGraph(phylotree_opt@tree))))
+```
+
+<center>
+Visualizing $phylotree\_real$, $phylotree\_grasp$ and $phylotree\_opt$
+</center>
+
+
+
+As these three trees above are based on the solution of the same instance for the CDEP, it is reasonable that they are quite similar. Now, we will show the different methods offered by the `GeRnika` package for comparing phylogenetic trees.
+
+## The *equals* method
+
+If we compare the phylogenetic trees from above, it is evident that they are not equal. For example, $phylotree\_real$ and $phylotree\_opt$ are not equal as some of the edges of $phylotree\_real$ do not exist in $phylotree\_opt$ and the other way around. 
+
+The equivalence between two phylogenetic trees may be checked by using the *equals* method as follows:
+
+```{r}
+# Checking if phylotree_real is equal to itself:
+equals(phylotree_1=phylotree_real, phylotree_2=phylotree_real)
+
+# Checking if phylotree_real and phylotree_opt are equal:
+equals(phylotree_1=phylotree_real, phylotree_2=phylotree_opt)
+```
+
+Equal phylogenetic trees, by definition, are composed by the same nodes, connected by the same edges. As a result, this method returns *TRUE* when we compare  $phylotree\_real$ with itself. However, as $phylotree\_real$ and $phylotree\_opt$ are not equal, this method returns *FALSE* when we check whether they are equal or not.
+
+Nevertheless, the fact of two phylogenetic trees not being equal does not mean that they do not have commonalities, as they may share common subtrees. 
+
+## The *find_common_subtrees* method
+
+In order to find the common subtrees between two phylogenetic trees, the following command may be used:
+
+
+```{r fig.align ="center", fig.dim = c(8,5), out.width = "7.25in"}
+find_common_subtrees(phylotree_1=phylotree_real, phylotree_2=phylotree_grasp)
+```
+<center>
+The common subtrees between $phylotree\_real$ and $phylotree\_grasp$.
+</center>
+
+
+```{r fig.align ="center", fig.dim = c(8,5), out.width = "7.25in"}
+find_common_subtrees(phylotree_1=phylotree_real, phylotree_2=phylotree_opt)
+```
+<center>
+The common subtrees between $phylotree\_real$ and $phylotree\_opt$.
+</center>
+
+
+
+The *find_common_subtrees* function renders all the common subtrees between two phylogenetic trees. For example, the first call of this method shows that $phylotree\_real$ and $phylotree\_opt$ have a common subtree that covers the biggest part of both phylogenetic trees. In addition, this method prints the information about the similarities and the distance between both trees.
+
+Furthermore, this method provides the option to render the common subtrees between two phylogenetic trees using the predefined tags for their clones. This can be done in the following way:
+
+
+```{r fig.align ="center", fig.dim = c(8,5), out.width = "7.25in"}
+find_common_subtrees(phylotree_1=phylotree_real, phylotree_2=phylotree_grasp, labels=TRUE)
+```
+<center>
+The common subtrees between $phylotree\_real$ and $phylotree\_grasp$ using tags.
+</center>
+
+
+```{r fig.align ="center", fig.dim = c(8,5), out.width = "7.25in"}
+find_common_subtrees(phylotree_1=phylotree_real, phylotree_2=phylotree_opt, labels=TRUE)
+```
+
+
+
+<center>
+The common subtrees between $phylotree\_real$ and $phylotree\_opt$ using tags.
+</center>
+
+It is perceptible that $phylotree_real$ is more similar to $phylotree_opt$ than to $phylotree_grasp$. As $phylotree_grasp$ represents the initial solution of the Iterated Local Search while $phylotree_opt$ describes the optimal solution after performing the ILS, it is reasonable that $phylotree_opt$ is more similar to $phylotree_true$ than $phylotree_grasp$.
+
+However, this is not the only way for comparing the commonalities between two different phylogenetic trees. It is also possible to combine two phylogenetic trees into a graph that gathers the nodes and the edges of both of them; a consensus tree. 
+
+## The *combine_trees* method
+
+The `GeRnika` package contains a method for combining different phylogenetic trees, through which their common edges will be distinguished from the independent edges of each of them.
+
+```{r fig.align ="center", fig.dim = c(8.5,9.5), out.width = "7.5in", warning=FALSE}
+# Creating the consensus tree between phylotree_real and phylotree_grasp
+consensus_real_grasp <- combine_trees(phylotree_1=phylotree_real, phylotree_2=phylotree_grasp)
+
+
+# Creating the consensus tree between phylotree_real and phylotree_opt
+consensus_real_opt <- combine_trees(phylotree_1=phylotree_real, phylotree_2=phylotree_opt)
+
+
+```
+
+Now we will render both consensus trees.
+
+```{r fig.align ="center", fig.dim = c(8.5,9.5), out.width = "7.5in", warning=FALSE}
+# Rendering the consensus between phylotree_real and phylotree_grasp
+render_graph(consensus_real_grasp)
+
+```
+
+<center>
+The consensus tree between $phylotree_real$ and $phylotree_grasp$.
+</center>
+
+```{r, out.width="47.5%", fig.dim = c(8.5,9.5), out.width = "7.5in", warning=FALSE}
+# Rendering the consensus between phylotree_real and phylotree_opt
+render_graph(consensus_real_opt)
+```
+
+<center>
+The consensus tree between $phylotree\_real$ and $phylotree\_opt$.
+</center>
+
+The above figures present the consensus tree between $phylotree\_real$ and $phylotree\_opt$ and the consensus tree between $phylotree\_real$ and $phylotree\_grasp$, respectively. Regarding the trees, the nodes and the edges that compose the common subtrees between the original trees are blue. In addition, yellow edges denote to the
+independent edges of the tree passed as the first parameter of the method, while orange edges represent the independent edges
+of the second tree.
+
+Additionally, `GeRnika` gives users the option to build consensus trees using the tags of the clones that compose the phylogenetic trees. Moreover, it is possible to select the palette of colors in which the edges of the consensus tree will be printed. For this purpose, For
+this purpose, the `GeRnika` package offers three custom palettes
+to be used for its methods: "Lancet", "NEJM" and "Simpsons". The "Simpsons" palette is used by default
+for the methods of `GeRnika`.
+
+```{r fig.align ="center", fig.height = 8.5, fig.width = 9.5 , out.width = "7in"}
+# Load one of the default palettes of the package:
+palette <- GeRnika::palettes$Lancet
+
+# Create the consensus tree between phylotree_real and phylotree_opt 
+# using clone tags and the previously loaded palette:
+consensus <- combine_trees(phylotree_1=phylotree_real, phylotree_2=phylotree_opt, 
+                           labels=TRUE, palette=palette)
+
+# Render the new consensus phylogenetic tree:
+render_graph(consensus)
+```
+
+<center>
+The consensus tree between $phylotree\_real$ and $phylotree\_opt$ using tags and a selected color palette.
+</center>
+
+Note that the parameter $palette$ of this method may take a palette --a vector containing the hexadecimal code of various colors-- composed by three colors in order to use them for building the consensus tree.
+
+# Session information
+
+This is the information of the system on which this document was compiled:
+
+```{r, echo = FALSE}
+sessionInfo(package = NULL)
+```
+
+

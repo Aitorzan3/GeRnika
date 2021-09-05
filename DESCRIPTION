@@ -1,0 +1,19 @@
+Package: GeRnika
+Type: Package
+Title: Simulating, Visualizing and Comparting Tumor Evolution Data.
+Version: 1.0.0
+Author: Aitor Sánchez Ferrera, Borja Calvo Molina and Maitena Tellaetxe Abete
+Maintainer: Aitor Sánchez Ferrera <aitorsanchezferrera@gmail.com>
+Description: GeRnika is a package capable of simulating tumor data, visualizing it by means of phylogenetic trees and comparing different tumor phylogenies. It aims at providing researchers a tool to easily simulate tumor data and analyze the results of their approaches for studying the composition and the evolutionary history of tumors.
+Encoding: UTF-8
+LazyData: true
+imports: data.tree, DiagrammeR, tidyverse, MCMCpack, reshape2,
+        markdown, knitcitations, colorspace
+Depends: data.tree, DiagrammeR, tidyverse, MCMCpack, reshape2,
+        markdown, knitcitations, colorspace, R (>= 2.10)
+RoxygenNote: 7.1.1
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2021-09-03 13:05:53 UTC; aitor
+License: GPL (>= 3)
