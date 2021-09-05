@@ -30,9 +30,9 @@ knitr::opts_chunk$set(
 
 install.packages(c("devtools", "png", "grid"))
 #logo <- system.file("extdata", "GeRnika.png", package = "GeRnika")
-library(devtools)
-library(png)
-library(grid)
+#library(devtools)
+#library(png)
+#library(grid)
 #img <- readPNG(logo)
 #grid.raster(img)
 ```
