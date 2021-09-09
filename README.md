@@ -15,7 +15,7 @@ Once installed, the namespace of `GeRnika` may be loaded by attaching it:
 library(GeRnika)
 ```
 
-This produces a short report about the versions of the packages that are used by `GeRnika`, providing information about any conflicts with previously loaded packages. `GeRnika` includes the following packages: data.tree [@2], tidyverse [@3], Diagrammer [@4], MCMCpack [@5], reshape2 [@6] and colorspace [@11]
+This produces a short report about the versions of the packages that are used by `GeRnika`, providing information about any conflicts with previously loaded packages. `GeRnika` includes the following packages: data.tree, tidyverse, Diagrammer, MCMCpack, reshape2 and colorspace.
 
 # Design principles
 Regarding the principles related to the design of `GeRnika`, this has been implemented in order to be fundamentally **intuitive** and **easy to use**. There exists different *R* packages that allow their users to solve the Cloning Deconvolution Problem (CDP) and analyze the phylogeny of tumor samples, but they do not offer many approaches for visualizing phylogenetic trees in a comprehensive way nor compare the phylogeny of different samples. 
