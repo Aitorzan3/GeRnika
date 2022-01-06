@@ -227,6 +227,22 @@ plot_phylotree<-function(phylotree, labels=FALSE){
   render_graph(ToDiagrammeRGraph(tree))
 }
 
+plot_proportions<-function(phylotree, proportions){
+  if(length(phylotree@clones) != length(proportions)){
+    stop("\n the proportion vectors length must be equal to the number of clones in the tree")
+  }
+  graph<-ToDiagrammeRGraph(Clone(phylotree@tree))
+  order<-as.numeric(get_node_attrs_ws(select_nodes(graph), node_attr=label))
+  proportions_genes<-unlist(map(1:length(proportions), function(x) proportions[gene_to_clone(phylotree,x)]))
+  ordered<-unlist(map(1:length(order), function(x) proportions_genes[order[x]]))
+  circles<-unlist(map(ordered, function(x) return(x*3+0.5)))
+  sizes<-unlist(map(ordered, function(x) return(x*140+10)))
+  colors<-unlist(map(ordered, function(x) return(adjust_transparency(GeRnika::palettes$Simpsons[3], alpha = x*0.95+0.05)))
+  graph<-set_node_attrs(set_node_attrs(set_node_attrs(graph, node_attr = fontsize, values = unlist(sizes)), node_attr = width, values = unlist(circles)), node_attr = height, values = unlist(circles))
+  graph<-set_node_attrs(set_node_attrs(graph, node_attr=fontcolor, values = unlist(colors)), node_attr=color, values = unlist(colors))
+  return(graph)
+}
+
 #' @exportMethod
 setGeneric("plot", function(object, labels=FALSE)standardGeneric("plot"))
 setMethod("plot", signature(object="Phylotree", labels="ANY"), function(object, labels) plot_phylotree(object, labels))
