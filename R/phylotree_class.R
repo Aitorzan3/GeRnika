@@ -237,7 +237,7 @@ plot_proportions<-function(phylotree, proportions){
   ordered<-unlist(map(1:length(order), function(x) proportions_genes[order[x]]))
   circles<-unlist(map(ordered, function(x) return(x*3+0.5)))
   sizes<-unlist(map(ordered, function(x) return(x*140+10)))
-  colors<-unlist(map(ordered, function(x) return(adjust_transparency(GeRnika::palettes$Simpsons[3], alpha = x*0.95+0.05)))
+  colors<-unlist(map(ordered, function(x) return(adjust_transparency(GeRnika::palettes$Simpsons[3], alpha = x*0.95+0.05))))
   graph<-set_node_attrs(set_node_attrs(set_node_attrs(graph, node_attr = fontsize, values = unlist(sizes)), node_attr = width, values = unlist(circles)), node_attr = height, values = unlist(circles))
   graph<-set_node_attrs(set_node_attrs(graph, node_attr=fontcolor, values = unlist(colors)), node_attr=color, values = unlist(colors))
   return(graph)
