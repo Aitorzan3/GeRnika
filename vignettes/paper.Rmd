@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 
 # Summary
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+```{r, echo = FALSE, out.width="25%", message = FALSE, warning = FALSE}
 
 
 
@@ -37,6 +37,8 @@ knitr::opts_chunk$set(
 #library(grid)
 #img <- readPNG("extdata/GeRnika.png")
 #grid.raster(img)
+logo <- system.file("extdata", "GeRnika.png", package = "GeRnika")
+knitr::include_graphics(logo)
 ```
 
 
