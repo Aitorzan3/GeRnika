@@ -103,8 +103,20 @@ calc_F <- function(U, B, heterozygous = TRUE) {
   } else {
     F_ <- F_homozygous
   }
-  # Acotar valores de F a 1 (a veces surgen valores mayores a 1 y no puede haberlos)
+  # wrap values of F between 0 and 1 as they represent clone proportions
   return(apply(F_, c(1,2), FUN = function(x) min(x,1)))
+}
+
+merge_graphs<-function(phylotree,merge,graphs,i,labels){
+  if(i>length(graphs)){
+    return(merge)
+  }
+  graph<-graphs[[i]]
+  if(isTRUE(labels)){
+    graph<-set_node_attrs(graph, "label", phylotree@labels)
+  }
+  merge<-combine_graphs(merge, graph)
+  return(merge_graphs(phylotree, merge, graphs, i+1, labels))
 }
 
 
