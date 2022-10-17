@@ -10,14 +10,14 @@ setClass("Node", slots="Node")
 #' @exportClass
 #' @name Phylotree_class
 #' @title Phylotree_class
-#' S4 class to represent phylogenetic trees.
+#' S4 class to represent phylogenetic trees
 #'
-#' @slot B the data.frame containing the square matrix that represents the clones of the phylogenetic tree.
-#' @slot clones a vector representing the equivalence table of the clones in the phylogenetic tree.
-#' @slot genes a vector representing the equivalence table of the genes in the phylogenetic tree.
-#' @slot parents a vector representing the parents of the clones in the phylogenetic tree.
-#' @slot tree a \code{Node} class object representing the phylogenetic tree.
-#' @slot labels a vector representing the tags of the genes in the phylogenetic tree.
+#' @slot B A data.frame containing the square matrix that represents the ancestral relations among the clones of the phylogenetic tree.
+#' @slot clones A vector representing the equivalence table of the clones in the phylogenetic tree.
+#' @slot genes A vector representing the equivalence table of the genes in the phylogenetic tree.
+#' @slot parents A vector representing the parents of the clones in the phylogenetic tree.
+#' @slot tree A \code{Node} class object representing the phylogenetic tree.
+#' @slot labels A vector representing the tags of the genes in the phylogenetic tree.
 setClass("Phylotree", slots=list(B="matrix", clones="vector", genes="vector", parents="vector", tree="Node", labels="vector"))
 
 
@@ -31,15 +31,15 @@ get_clones<-function(genes){
 }
 
 #' @export
-#' @title Create a \code{Phylotree} object.
+#' @title Create a \code{Phylotree} object
 #' @description The general constructor of the \code{Phylotree} S4 class.
 #'
-#' @param B The Matrix that represents the clones in the phylogenetic tree.
-#' @param clones numeric vector representing the clones in the phylogenetic tree.
-#' @param genes numeric vector representing the genes in the phylogenetic tree.
-#' @param parents numeric vector representing the parents the clones in the phylogenetic tree.
-#' @param tree \code{data.tree} object containing the tree structure of the phylogenetic tree.
-#' @param labels Optional argument that refers to the list containing the tags of the genes of the phylogenetic tree. \code{NA} by default.
+#' @param B A Matrix that represents the clones in the phylogenetic tree.
+#' @param clones A numeric vector representing the clones in the phylogenetic tree.
+#' @param genes A numeric vector representing the genes in the phylogenetic tree.
+#' @param parents A numeric vector representing the parents the clones in the phylogenetic tree.
+#' @param tree A \code{data.tree} object containing the tree structure of the phylogenetic tree.
+#' @param labels An optional argument that refers to the list containing the tags of the genes of the phylogenetic tree. \code{NA} by default.
 #' @return A \code{Phylotree} class object.
 #'
 #' @examples
@@ -116,7 +116,7 @@ create_phylotree<-function(B, clones, genes, parents, tree, labels=NA){
 }
 
 #' @export
-#' @title Create a \code{Phylotree} object from a \code{B} matrix.
+#' @title Create a \code{Phylotree} object from a \code{B} matrix
 #' @description Creates a \code{Phylotree} class object from a \code{B} matrix.
 #'
 #' @param B The Matrix that represents the clones in the phylogenetic tree.
@@ -187,7 +187,7 @@ B_to_phylotree<-function(B, labels=NA){
 #' @title Get B from \code{Phylotree}
 #' @description Returns the B matrix of a \code{Phylotree} object.
 #'
-#' @param phylotree a \code{phylotree} class object.
+#' @param phylotree a \code{Phylotree} class object.
 #' @return A \code{data.frame} representing the B matrix of the phylogenetic tree.
 #' @examples
 #' # Get the B matrix of a tumor instance
@@ -227,7 +227,7 @@ plot_phylotree<-function(phylotree, labels=FALSE){
   render_graph(ToDiagrammeRGraph(tree))
 }
 
-plot_proportions<-function(phylotree, proportions){
+plot_p<-function(phylotree, proportions){
   if(length(phylotree@clones) != length(proportions)){
     stop("\n the proportion vectors length must be equal to the number of clones in the tree")
   }
@@ -241,6 +241,48 @@ plot_proportions<-function(phylotree, proportions){
   graph<-set_node_attrs(set_node_attrs(set_node_attrs(graph, node_attr = fontsize, values = unlist(sizes)), node_attr = width, values = unlist(circles)), node_attr = height, values = unlist(circles))
   graph<-set_node_attrs(set_node_attrs(graph, node_attr=fontcolor, values = unlist(colors)), node_attr=color, values = unlist(colors))
   return(graph)
+}
+
+#' @export
+#' @title Plot a phylogenetic tree according to its clones' proportions
+#' @description Plots a phylogenetic tree according to its clones' proportions. It is possible to plot several phylogenetic trees.
+#'
+#' @param phylotree A \code{Phylotree} class object
+#' @param proportions A vector containing the proportions of each clone in the phylogenetic tree. If a matrix is given, this method will plot more than one phylogenetic tree according to the proportions that each row contains.
+#' @param labels A boolean, if \code{TRUE} the rendered graph will be plotted with the tags of the genes in the phylogenetic trees instead of their gene index. \code{FALSE} by default.
+#'
+#' @examples
+#' # Create an instance
+#' # composed by 5 subpopulations of clones
+#' # and 4 samples
+#' instance <- create_instance(
+#'        n = 5, 
+#'        m = 4, 
+#'        k = 1, 
+#'        selection = "neutral")
+#'
+#' # Create a new 'Phylotree' object
+#' # on the basis of the B matrix
+#' phylotree <- B_to_phylotree(B = B)
+#'
+#' # Generate the tags for the genes of
+#' # the phyogenetic tree
+#' tags <- LETTERS[1:nrow(B)]
+#'
+#' # Plot the phylogenetic tree taking
+#' # into account the proportions of the
+#' # previously generated instance
+#' plot_proportions(phylotree, instance$U, labels=TRUE)
+plot_proportions<-function(phylotree,proportions,labels=FALSE){
+  graphs<-map(1:nrow(proportions), function(x) plot_p(phylotree, proportions[x,]))
+  graph<-graphs[[1]]
+  if(isTRUE(labels)){
+    graph<-set_node_attrs(graph, "label", phylotree@labels)
+  }
+  merged<-graph
+  merged<-merge_graphs(phylotree, merged, graphs, 2, labels)
+  merged<-set_edge_attrs(merged, edge_attr=color, values='black')
+  render_graph(merged)
 }
 
 #' @exportMethod
