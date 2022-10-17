@@ -15,20 +15,22 @@ create_instance(
 )
 }
 \arguments{
-\item{n}{the number of clones.}
+\item{n}{The number of clones.}
 
-\item{m}{the number of samples.}
+\item{m}{The number of samples.}
 
-\item{k}{continuous number how branchy the created topology is}
+\item{k}{Continuous number how branchy the created topology is.}
 
-\item{selection}{character that specifies the clone selection. Possible values: \code{"positive"} and \code{"neutral"}}
+\item{selection}{Character that specifies the clone selection. Possible values: \code{"positive"} and \code{"neutral"}.}
 
-\item{noisy}{optional logical that specifies whether noise is added to values in \code{F} or not. FALSE by default.}
+\item{noisy}{An optional logical that specifies whether noise is added to values in \code{F} or not. FALSE by default.}
 
-\item{depth}{optional argument representing the read sequencing depth (for noisy cases). 30 by default.}
+\item{depth}{An optional argument representing the read sequencing depth (for noisy cases). 30 by default.}
+
+\item{seed}{An optional argument for controlling the randomness of the generated instances. Sys.time() by default.}
 }
 \value{
-the instance of a tumor sample, composed by \code{F}, \code{F_true}, \code{B} and \code{U} .
+The instance of a tumor sample, composed by \code{F}, \code{F_true}, \code{B} and \code{U} .
 }
 \description{
 Simulates a tumor instance, composed by \code{F}, \code{F_true}, \code{B} and \code{U}.

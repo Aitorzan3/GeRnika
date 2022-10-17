@@ -310,11 +310,66 @@ phylotree <- B_to_phylotree(B=instance$B, labels=tags)
 
 After creating the `Phylotree` class object, we may render it using the tags we have previously assigned to the clones in the following way:
 
-```{r, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clone with tags."}
+```{r, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones with tags."}
 plot(phylotree, labels=TRUE)
 ```
 
 This is one of the possible methods for instantiating `Phylotree` class objects on the basis of the $B$ matrix of a tumor. However, this package also grants the option of using the general constructor for the `Phylotree` S4 class for instantiating new `Phylotree` objects, which allows users to give specific values to the attributes of a new `Phylotree` class object.
+
+## Plot proportions of clones in a phylogenetic tree
+
+`GeRnika` allows its users to plot `Phylotree` objects according to some given proportions of the clones that compose the phylogenetic tree. We may do this using the resulting $U$ matrix of the `create\_instance` method included in this package as follows:
+
+```{r, eval=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions."}
+#Create the instance of a tumor
+instance <- create_instance(5,4, 0.5, "neutral", noisy=FALSE)
+
+#Use the B matrix of the previously generated instance for creating a Phylotree class object
+tree<-B_to_phylotree(instance$B)
+
+#Plot the phylogenetic tree using the U matrix of the previously generated instance
+plot_proportions(tree, instance$U)
+```
+
+```{r, echo=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions."}
+#Create the instance of a tumor
+instance <- create_instance(5, 4, 0.5, "neutral", noisy=FALSE, seed=1)
+
+#Use the B matrix of the previously generated instance for creating a Phylotree class object
+tree<-B_to_phylotree(instance$B)
+
+#Plot the phylogenetic tree using the U matrix of the previously generated instance
+plot_proportions(tree, instance$U)
+
+```
+
+In the same way, we can also do this by using some predefined tags for the clones composing our phylogenetic tree in the following way:
+
+```{r, eval=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions and tags."}
+tags <- c("A", "B", "C", "D", "E")
+
+#Create the instance of a tumor
+instance <- create_instance(5, 4, 0.5, "neutral", noisy=FALSE)
+
+#Use the B matrix of the previously generated instance for creating a Phylotree class object
+tree<-B_to_phylotree(instance$B, labels=tags)
+
+#Plot the phylogenetic tree using the U matrix of the previously generated instance
+plot_proportions(tree, instance$U, labels=TRUE)
+```
+
+```{r, echo=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions and tags."}
+tags <- c("A", "B", "C", "D", "E")
+
+#Create the instance of a tumor
+instance <- create_instance(5, 4, 0.5, "neutral", TRUE, seed=1)
+
+#Use the B matrix of the previously generated instance for creating a Phylotree class object
+tree<-B_to_phylotree(instance$B, labels=tags)
+
+#Plot the phylogenetic tree using the U matrix of the previously generated instance
+plot_proportions(tree, instance$U, labels=TRUE)
+```
 
 Once we have shown the usage of the methods for instantiating `Phylotree` class objects and the procedures by these can be visualized, we will proceed to present the functions for comparing the phylogeny of different tumors.
 

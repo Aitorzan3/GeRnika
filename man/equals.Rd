@@ -15,7 +15,7 @@ equals(phylotree_1, phylotree_2)
 A boolean, \code{TRUE} if they are equal and \code{FALSE} if not.
 }
 \description{
-Checks wether two phylogenetc trees are equivalent or not.
+Checks wether two phylogenetic trees are equivalent or not.
 }
 \examples{
 

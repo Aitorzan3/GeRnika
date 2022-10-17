@@ -3,9 +3,9 @@
 \docType{data}
 \name{palettes}
 \alias{palettes}
-\title{palettes for the methods of \code{GeRnika}}
+\title{Palettes for the methods of \code{GeRnika}}
 \format{
-A data.frame contaning 3 palettes
+A data.frame containing 3 palettes.
 \describe{
   \item{Lancet}{#0099B444, #AD002A77, #42B540FF}
   \item{NEJM}{#FFDC9177, #7876B188, #EE4C97FF}

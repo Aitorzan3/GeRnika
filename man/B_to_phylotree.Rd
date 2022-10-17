@@ -2,7 +2,7 @@
 % Please edit documentation in R/phylotree_class.R
 \name{B_to_phylotree}
 \alias{B_to_phylotree}
-\title{Create a \code{Phylotree} object from a \code{B} matrix.}
+\title{Create a \code{Phylotree} object from a \code{B} matrix}
 \usage{
 B_to_phylotree(B, labels = NA)
 }

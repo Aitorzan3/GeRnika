@@ -16,7 +16,7 @@ combine_trees(
 
 \item{phylotree_2}{A \code{Phylotree} class object.}
 
-\item{palette}{a vector composed by the hexadecimal code of three colors. "The Simpsons" palette used as default.}
+\item{palette}{A vector composed by the hexadecimal code of three colors. "The Simpsons" palette used as default.}
 
 \item{labels}{A boolean, if \code{TRUE} the resulting graph will be plotted with the tags of the genes in the phylogenetic trees instead of their mutation index. \code{FALSE} by default.}
 }

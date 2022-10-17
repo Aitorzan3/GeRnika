@@ -2,22 +2,22 @@
 % Please edit documentation in R/phylotree_class.R
 \name{create_phylotree}
 \alias{create_phylotree}
-\title{Create a \code{Phylotree} object.}
+\title{Create a \code{Phylotree} object}
 \usage{
 create_phylotree(B, clones, genes, parents, tree, labels = NA)
 }
 \arguments{
-\item{B}{The Matrix that represents the clones in the phylogenetic tree.}
+\item{B}{A Matrix that represents the clones in the phylogenetic tree.}
 
-\item{clones}{numeric vector representing the clones in the phylogenetic tree.}
+\item{clones}{A numeric vector representing the clones in the phylogenetic tree.}
 
-\item{genes}{numeric vector representing the genes in the phylogenetic tree.}
+\item{genes}{A numeric vector representing the genes in the phylogenetic tree.}
 
-\item{parents}{numeric vector representing the parents the clones in the phylogenetic tree.}
+\item{parents}{A numeric vector representing the parents the clones in the phylogenetic tree.}
 
-\item{tree}{\code{data.tree} object containing the tree structure of the phylogenetic tree.}
+\item{tree}{A \code{data.tree} object containing the tree structure of the phylogenetic tree.}
 
-\item{labels}{Optional argument that refers to the list containing the tags of the genes of the phylogenetic tree. \code{NA} by default.}
+\item{labels}{An optional argument that refers to the list containing the tags of the genes of the phylogenetic tree. \code{NA} by default.}
 }
 \value{
 A \code{Phylotree} class object.

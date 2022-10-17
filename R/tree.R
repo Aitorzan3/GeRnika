@@ -12,7 +12,7 @@ create_tree<-function(phylotree){
 }
 
 #' @export
-#' @title find the set of common subtrees between two phylogenetic trees.
+#' @title Find the set of common subtrees between two phylogenetic trees
 #' @description Plots the common subtrees between two phylogenetic trees and prints the information about their similarities and their differences.
 #'
 #' @param phylotree_1 A \code{Phylotree} class object.
@@ -34,7 +34,7 @@ create_tree<-function(phylotree){
 #' tags <- LETTERS[1:nrow(B)]
 #' 
 #' 
-#' # Instantiate two \code{Phylotree} class objects on 
+#' # Instantiate two Phylotree class objects on 
 #' # the basis of the B matrices using tags
 #' phylotree_real <- B_to_phylotree(
 #'                     B = B_real, 
@@ -96,7 +96,7 @@ find_common_subtrees<-function(phylotree_1,phylotree_2, labels=FALSE){
 
 #' @export
 #' @title Check if two phylogenetic trees are equal
-#' @description Checks wether two phylogenetc trees are equivalent or not.
+#' @description Checks wether two phylogenetic trees are equivalent or not.
 #'
 #' @param phylotree_1 A \code{Phylotree} class object.
 #' @param phylotree_2 A \code{Phylotree} class object.
@@ -132,7 +132,7 @@ equals<-function(phylotree_1, phylotree_2){
 #'
 #' @param phylotree_1 A \code{Phylotree} class object.
 #' @param phylotree_2 A \code{Phylotree} class object.
-#' @param palette a vector composed by the hexadecimal code of three colors. "The Simpsons" palette used as default.
+#' @param palette A vector composed by the hexadecimal code of three colors. "The Simpsons" palette used as default.
 #' @param labels A boolean, if \code{TRUE} the resulting graph will be plotted with the tags of the genes in the phylogenetic trees instead of their mutation index. \code{FALSE} by default.
 #' @return a \code{dgr_graph} object representing the consensus graph between \code{phylotree_1} \code{phylotree_2}.
 #' @examples 

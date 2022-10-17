@@ -3,9 +3,9 @@
 \docType{data}
 \name{B_mats}
 \alias{B_mats}
-\title{B_mats is a set of 10 trios of B matrices}
+\title{A set of 10 trios of B matrices for experimenting with the methods of \code{GeRnika}}
 \format{
-A list of lists composed by 10 trios of B matrices
+A list of lists composed by 10 trios of B matrices.
 \describe{
   \item{Trio 1}{B_real, B_grasp and B_opt (matrices composed by 5 clones)}
   \item{Trio 2}{B_real, B_grasp and B_opt (matrices composed by 5 clones)}

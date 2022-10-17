@@ -2,7 +2,7 @@
 % Please edit documentation in R/tree.R
 \name{find_common_subtrees}
 \alias{find_common_subtrees}
-\title{find the set of common subtrees between two phylogenetic trees.}
+\title{Find the set of common subtrees between two phylogenetic trees}
 \usage{
 find_common_subtrees(phylotree_1, phylotree_2, labels = FALSE)
 }
@@ -31,7 +31,7 @@ B_opt <- B_mats[[2]]$B_opt
 tags <- LETTERS[1:nrow(B)]
 
 
-# Instantiate two \code{Phylotree} class objects on 
+# Instantiate two Phylotree class objects on 
 # the basis of the B matrices using tags
 phylotree_real <- B_to_phylotree(
                     B = B_real, 

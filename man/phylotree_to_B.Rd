@@ -7,7 +7,7 @@
 phylotree_to_B(phylotree)
 }
 \arguments{
-\item{phylotree}{a \code{phylotree} class object.}
+\item{phylotree}{a \code{Phylotree} class object.}
 }
 \value{
 A \code{data.frame} representing the B matrix of the phylogenetic tree.

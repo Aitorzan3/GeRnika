@@ -119,13 +119,14 @@ add_noise <- function(F, depth, overdispersion) {
 #' @title Simulate tumor data
 #' @description Simulates a tumor instance, composed by \code{F}, \code{F_true}, \code{B} and \code{U}.
 #'
-#' @param n the number of clones.
-#' @param m the number of samples.
-#' @param k continuous number how branchy the created topology is 
-#' @param selection character that specifies the clone selection. Possible values: \code{"positive"} and \code{"neutral"}
-#' @param noisy optional logical that specifies whether noise is added to values in \code{F} or not. FALSE by default.
-#' @param depth optional argument representing the read sequencing depth (for noisy cases). 30 by default.   
-#' @return the instance of a tumor sample, composed by \code{F}, \code{F_true}, \code{B} and \code{U} .
+#' @param n The number of clones.
+#' @param m The number of samples.
+#' @param k Continuous number how branchy the created topology is. 
+#' @param selection Character that specifies the clone selection. Possible values: \code{"positive"} and \code{"neutral"}.
+#' @param noisy An optional logical that specifies whether noise is added to values in \code{F} or not. FALSE by default.
+#' @param depth An optional argument representing the read sequencing depth (for noisy cases). 30 by default.   
+#' @param seed An optional argument for controlling the randomness of the generated instances. Sys.time() by default.
+#' @return The instance of a tumor sample, composed by \code{F}, \code{F_true}, \code{B} and \code{U} .
 #' @examples
 #' # Create an instance composed by 10 clones,
 #' # 4 samples, k = 1, "neutral" selection and

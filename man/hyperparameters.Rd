@@ -5,7 +5,7 @@
 \alias{hyperparameters}
 \title{hyperparameters for the methods of \code{GeRnika}}
 \format{
-A data.frame contaning different static values.
+A data.frame containing different static values.
 \describe{
   \item{Overdispersion}{value = 0.5}
   \item{Depth_sequencing}{value = 30.0}
@@ -18,6 +18,6 @@ local source; inspired on the optimal parameters for the methods of \code{GeRnik
 hyperparameters
 }
 \description{
-A data.frame containing the static values for the parameters used in the methods of \code{GeRnika}.
+A data.frame containing the static values for the parameters used in the methods of \code{GeRnika}
 }
 \keyword{datasets}
