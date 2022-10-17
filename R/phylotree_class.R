@@ -228,7 +228,7 @@ plot_phylotree<-function(phylotree, labels=FALSE){
 }
 
 plot_p<-function(phylotree, proportions){
-  if(length(phylotree@clones) != length(proportions)){
+  if(length(phylotree@clones) != ncol(proportions)){
     stop("\n the proportion vectors length must be equal to the number of clones in the tree")
   }
   graph<-ToDiagrammeRGraph(Clone(phylotree@tree))
