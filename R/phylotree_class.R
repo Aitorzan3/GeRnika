@@ -1,6 +1,5 @@
 library(data.tree)
 library(DiagrammeR)
-library(tidyverse)
 
 source("R/tree.R")
 source("R/clone.R")

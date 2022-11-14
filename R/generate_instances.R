@@ -31,7 +31,7 @@ create_B <- function(n, k) {
   children_clone_idx <- get_children_idx(B = B, node_idx = clone_idx)
   if (!is.null(children_clone_idx)) {
     params <- pull(dirich_params, eval(selection))
-    dirich_values <- rdirichlet(1, c(params[1],
+    dirich_values <- rdir(1, c(params[1],
                                      rep(params[2], length(children_clone_idx))))
     # Normalize the values to the father clone's proportion
     norm_dirich_values <- dirich_values*clone_proportions[clone_idx]

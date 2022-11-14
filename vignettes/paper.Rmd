@@ -52,9 +52,18 @@ Cancer is a genetic disease based on the uncontrollable division of cells and th
 
 ```{r, eval = FALSE}
 # commands for installing the package
+devtools::install_github("Aitorzan3/GeRnika")
+```
+
+Note that in order to install the vignettes together with the package, it is necessary to attach the packages "markdown" and "knitcitations" to your namespace. Once you have done that, you may use the following instruction to install de vignettes of GeRnika:
+
+```{r, eval = FALSE}
+# commands for installing the package
 devtools::install_github("Aitorzan3/GeRnika", build_vignettes = TRUE)
 ```
-Once installed, the namespace of `GeRnika` may be loaded by attaching it:
+
+Once the package has been installed, the namespace of `GeRnika` may be loaded by attaching it:
+
 
 ```{r setup}
 library(GeRnika)

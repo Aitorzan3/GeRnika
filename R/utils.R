@@ -1,6 +1,5 @@
 library(data.tree)
 library(DiagrammeR)
-library(tidyverse)
 
 get_distance<-function(node_idx_1,node_idx_2, B){
   return(length(which(xor(B[node_idx_1,],B[node_idx_2,])==TRUE)))
@@ -119,4 +118,10 @@ merge_graphs<-function(phylotree,merge,graphs,i,labels){
   return(merge_graphs(phylotree, merge, graphs, i+1, labels))
 }
 
+rdir <-  function(n, alpha) {
+    l <- length(alpha)
+    x <- matrix(rgamma(l*n,alpha),ncol=l,byrow=TRUE)
+    sm <- x%*%rep(1,l)
+    return(x/as.vector(sm))
+  }
 
