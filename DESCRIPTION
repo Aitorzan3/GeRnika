@@ -8,9 +8,9 @@ Description: GeRnika is a package capable of simulating tumor data, visualizing 
 Encoding: UTF-8
 LazyData: true
 imports: data.tree, DiagrammeR, purrr, ggplot2, reshape2,
-         colorspace, dplyr
+         colorspace, dplyr, ggpubr
 Depends: data.tree, DiagrammeR, purrr, ggplot2, reshape2,
-         colorspace, dplyr, R (>= 2.10)
+         colorspace, dplyr, ggpubr, R (>= 2.10)
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Suggests: knitr, rmarkdown
