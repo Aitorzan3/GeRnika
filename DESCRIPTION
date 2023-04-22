@@ -16,4 +16,5 @@ VignetteBuilder: knitr, rmarkdown, knitcitations
 Suggests: knitr, rmarkdown, knitcitations
 NeedsCompilation: no
 Packaged: 2021-09-03 13:05:53 UTC; aitor
+LazyData: TRUE
 License: GPL (>= 3)
