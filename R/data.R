@@ -1,11 +1,11 @@
-#' hyperparameters for the methods of \code{GeRnika}
+#' Hyperparameters for the methods of \code{GeRnika}
 #'
 #' A data.frame containing the static values for the parameters used in the methods of \code{GeRnika}
 #'
 #' @format A data.frame containing different static values.
 #' \describe{
 #'   \item{Overdispersion}{value = 0.5}
-#'   \item{Depth_sequencing}{value = 30.0}
+#'   \item{Depth_sequencing}{value = 30}
 #' }
 #' @source local source; inspired on the optimal parameters for the methods of \code{GeRnika}.
 "hyperparameters"
@@ -25,7 +25,7 @@
 
 #' A set of 10 trios of B matrices for experimenting with the methods of \code{GeRnika}
 #'
-#' A list of lists composed by 10 trios of B matrices; a real B matrix, a B matrix got by using the Grasp method and another one as a result of an ILS. These matrices can be used as examples for the methods of \code{GeRnika}.
+#' A list of lists composed by 10 trios of B matrices; a real B matrix, a B matrix got by using the GRASP method and another one as a result of an ILS. These matrices can be used as examples for the methods of \code{GeRnika}.
 #'
 #' @format A list of lists composed by 10 trios of B matrices.
 #' \describe{

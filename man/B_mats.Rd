@@ -27,6 +27,6 @@ Local source; as a result of the Grasp and the ILS methods used for solving the 
 B_mats
 }
 \description{
-A list of lists composed by 10 trios of B matrices; a real B matrix, a B matrix got by using the Grasp method and another one as a result of an ILS. These matrices can be used as examples for the methods of \code{GeRnika}.
+A list of lists composed by 10 trios of B matrices; a real B matrix, a B matrix got by using the GRASP method and another one as a result of an ILS. These matrices can be used as examples for the methods of \code{GeRnika}.
 }
 \keyword{datasets}

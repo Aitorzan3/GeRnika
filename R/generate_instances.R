@@ -167,6 +167,9 @@ create_instance <- function(n, m, k, selection, noisy = TRUE, depth = 30, seed =
   if(selection!="neutral" & selection!="positive"){
     stop("\n selection must be neutral or positive")
   }
+  if(depth < 1 || !identical(round(depth), depth)){
+    stop("\n depth must be a natural number greater than or equal to 1 ")
+  }
   set.seed(seed)
   # overdispersion de la binomial negativa nos da la diferencia de probabilidad del evento o su negado
   overdispersion <- 5

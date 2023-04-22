@@ -3,12 +3,12 @@
 \docType{data}
 \name{hyperparameters}
 \alias{hyperparameters}
-\title{hyperparameters for the methods of \code{GeRnika}}
+\title{Hyperparameters for the methods of \code{GeRnika}}
 \format{
 A data.frame containing different static values.
 \describe{
   \item{Overdispersion}{value = 0.5}
-  \item{Depth_sequencing}{value = 30.0}
+  \item{Depth_sequencing}{value = 30}
 }
 }
 \source{

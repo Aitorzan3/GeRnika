@@ -1,30 +1,79 @@
-# GeRnika
 
-<img src="https://raw.githubusercontent.com/Aitorzan3/GeRnika/master/inst/extdata/GeRnika.png" width="300" height="300" />
+<style>
+body {
+text-align: justify}
+</style>
 
-GeRnika is a package capable of simulating tumor data, visualizing it by means of phylogenetic trees and comparing tumor phylogenies. GeRnika aims at providing a tool to help researchers to easily simulate tumor data and analyze the results of their approaches for studying the composition and the evolutionary history of tumors.
+<img src="../../../../../AppData/Local/R/win-library/4.2/GeRnika/extdata/GeRnika.png" width="25%" />
 
-# GeRnika package
+`GeRnika` is an open-source R package that is capable of simulating,
+visualizing and comparing tumor evolution data by using simple commands.
+This aims at providing a tool to help researchers to easily simulate
+tumor clonal data and analyze the results of their approaches for studying the
+composition and the evolutionary history of tumors.
 
-`GeRnika` may be easily installed with the execution of the following R commands:
+## Installation
 
-```{r, eval = FALSE}
-# commands for installing the package
+`GeRnika` may be easily installed with the execution of the following
+command:
+
+``` r
+# commands for installing the package from github
+devtools::install_github("Aitorzan3/GeRnika")
+```
+
+Note that in order to install the vignettes together with the package,
+it is necessary to attach the packages “markdown” and “knitcitations” to
+your namespace. Once you have done that, you may use the following
+instruction to install de vignettes of `GeRnika`:
+
+``` r
+# commands for installing the package together with its vignettes from github
 devtools::install_github("Aitorzan3/GeRnika", build_vignettes = TRUE)
 ```
-Once installed, the namespace of `GeRnika` may be loaded by attaching it:
 
-```{r setup}
+Finally, `GeRnika` can also be installed from Bioconductor using the
+`BiocManager` package via the following command:
+
+``` r
+# commands for installing the package from Bioconductor
+if (!require("GeRnika", quietly = TRUE))
+    install.packages("GeRnika")
+
+BiocManager::install("GeRnika")
+```
+
+Once the package has been installed, the namespace of `GeRnika` may be
+loaded by using
+
+``` r
 library(GeRnika)
 ```
 
-This produces a short report about the versions of the packages that are used by `GeRnika`, providing information about any conflicts with previously loaded packages. `GeRnika` includes the following packages: data.tree, tidyverse, Diagrammer, MCMCpack, reshape2 and colorspace.
+This produces a short report about the versions of the packages that are
+used by `GeRnika`, providing information about any conflict related to
+its dependencies.
 
-# Design principles
-Regarding the principles related to the design of `GeRnika`, this has been implemented in order to be fundamentally **intuitive** and **easy to use**. There exist different *R* packages that allow their users to solve the Cloning Deconvolution Problem (CDP) and analyze the phylogeny of tumor samples, but they do not offer many approaches for visualizing phylogenetic trees in a comprehensive way nor compare the phylogeny of different samples. 
+## Documentation
 
-Following the above, `GeRnika` offers **accesible** methods for simulating and analyzing tumors phylogeny by using **simple commands**, **all in one** single package.
+To view documentation for the version of this package installed in your
+system, start R and enter:
 
-# Acknowledgments
+``` r
+browseVignettes("GeRnika")
+```
 
-`GeRnika` would not have been possible without the hard work of the *Intelligent Systems Group* members, specially **Borja Calvo** and **Maitena Tellaetxe**, who implemented various methods gathered in this package and coordinated its creation. 
+## Design principles
+
+Regarding the principles related to the design of `GeRnika`, this has
+been implemented in order to be fundamentally **intuitive** and **easy
+to use**. This is achieved by offering **accesible** methods for
+simulating and analyzing tumor phylogenies by using **simple commands**,
+**all in one** single package.
+
+## Acknowledgments
+
+`GeRnika` would not have been possible without the hard work of the
+*Intelligent Systems Group* members, specially **Borja Calvo** and
+**Maitena Tellaetxe**, who implemented various methods gathered in this
+package and coordinated its creation.
