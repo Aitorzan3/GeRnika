@@ -191,17 +191,17 @@ create_instance <- function(n, m, k, selection, noisy = TRUE, depth = 30, seed =
   } else {
     F <- F_true
   }
-  clone_names<-map(1:n, function(x) paste0("clone", x))
-  mutation_names<-map(1:n, function(x) paste0("mut", x))
-  sample_names<-map(1:m, function(x) paste0("sample", x))
-  rownames(F)<- sample_names
-  colnames(F)<- mutation_names
-  rownames(B)<- clone_names
-  colnames(B)<- mutation_names
-  rownames(U)<- sample_names
-  colnames(U)<- clone_names
-  rownames(F_true)<- sample_names
-  colnames(F_true)<- mutation_names
+  clone_names <- map(1:n, function(x) paste0("clone", x))
+  mutation_names <- map(1:n, function(x) paste0("mut", x))
+  sample_names <- map(1:m, function(x) paste0("sample", x))
+  rownames(F) <- sample_names
+  colnames(F) <- mutation_names
+  rownames(B) <- clone_names
+  colnames(B) <- mutation_names
+  rownames(U) <- sample_names
+  colnames(U) <- clone_names
+  rownames(F_true) <- sample_names
+  colnames(F_true) <- mutation_names
   return(list(F = F, B = B, U = U, F_true = F_true))
 }
 

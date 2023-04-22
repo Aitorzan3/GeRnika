@@ -58,26 +58,27 @@ create_tree<-function(phylotree){
 #'   phylotree_1 = phylotree_real, 
 #'   phylotree_2 = phylotree_opt, 
 #'   labels = TRUE)
-find_common_subtrees<-function(phylotree_1,phylotree_2, labels=FALSE){
-  tree1<-(ToDiagrammeRGraph(phylotree_1@tree))
-  tree2<-(ToDiagrammeRGraph(phylotree_2@tree))
-  intersection<-which(phylotree_1@parents==phylotree_2@parents)
+find_common_subtrees <- function(phylotree_1, phylotree_2, labels = FALSE) {
+  tree1 <- (ToDiagrammeRGraph(phylotree_1@tree))
+  tree2 <- (ToDiagrammeRGraph(phylotree_2@tree))
+  intersection <- which(phylotree_1@parents == phylotree_2@parents)
   e1 <- length(get_edges(tree1))
   e2 <- length(get_edges(tree2))
   et <- e1+e2
-  if(length(intersection)==0){
+  if (length(intersection) == 0) {
     cat("tree1 and tree2 have no common subtrees \n")
     cat("Independent edges of tree1: ", e1, "\n")
     cat("Independent edges of tree2: ", e2, "\n")
     cat("Common edges: 0 \n")
     cat("Distance: ", et, "\n")
-  }
-  else{
-    intersection<-unique(c(intersection, phylotree_1@parents[intersection][phylotree_1@parents[intersection]>0]))
-    inter1<-transform_to_subgraph_ws(select_nodes(tree1, conditions=(label %in% intersection)))
-    inter2<-transform_to_subgraph_ws(select_nodes(tree2, conditions=(label %in% intersection)))
-    inter_edges<-get_edge_ids(tree1)[which(get_edges(tree1, return_values="label") %in% get_edges(tree2, return_values="label"))]
-    inter<-(transform_to_subgraph_ws(select_edges_by_edge_id(inter1, inter_edges)))
+  } else {
+    intersection <- unique(c(intersection, 
+                             phylotree_1@parents[intersection][phylotree_1@parents[intersection] > 0]))
+    inter1 <- transform_to_subgraph_ws(select_nodes(tree1, conditions = (label %in% intersection)))
+    inter2 <- transform_to_subgraph_ws(select_nodes(tree2, conditions = (label %in% intersection)))
+    inter_edges <- get_edge_ids(tree1)[which(get_edges(tree1, return_values = "label") 
+                                             %in% get_edges(tree2, return_values = "label"))]
+    inter <- (transform_to_subgraph_ws(select_edges_by_edge_id(inter1, inter_edges)))
     ec <- length(inter_edges)
     e1 <- e1 - ec
     e2 <- e2 - ec
@@ -86,10 +87,9 @@ find_common_subtrees<-function(phylotree_1,phylotree_2, labels=FALSE){
     cat("Common edges: ", ec, "\n")
     d <- e1 + e2
     cat("Distance: ", d, "\n")
-    if(isTRUE(labels)){
-      inter<-set_node_attrs(inter, "label", phylotree_1@labels[as.numeric(get_node_ids(inter))])
+    if (isTRUE(labels)) {
+      inter <- set_node_attrs(inter, "label", phylotree_1@labels[as.numeric(get_node_ids(inter))])
     }
-
     render_graph(inter)
   }
 }
@@ -122,7 +122,7 @@ find_common_subtrees<-function(phylotree_1,phylotree_2, labels=FALSE){
 #' 
 #' 
 #' equals(phylotree_real, phylotree_opt)
-equals<-function(phylotree_1, phylotree_2){
+equals <- function(phylotree_1, phylotree_2) {
   return(all(phylotree_1@parents == phylotree_2@parents))
 }
 
@@ -189,44 +189,50 @@ equals<-function(phylotree_1, phylotree_2){
 #' # Render the consensus tree using tags and the
 #' # selected palette
 #' render(consensus_tag)
-combine_trees<-function(phylotree_1, phylotree_2, palette = GeRnika::palettes$Simpsons, labels = FALSE){
-  if(length(palette)<3){
+combine_trees <- function(phylotree_1, phylotree_2, palette = GeRnika::palettes$Simpsons, labels = FALSE) {
+  if (length(palette) < 3) {
     stop("\n palette argument has length<2, more than 3 elements are needed")
   }
-  if(length(palette)>3){
+  if (length(palette) > 3) {
     warning("\n palette argument has length>3, only the first 3 elements will be used")
   }
-  color_tree1 <- adjust_transparency(palette[1], alpha=0.25)
-  color_tree2 <- adjust_transparency(palette[2], alpha=0.25)
+  color_tree1 <- adjust_transparency(palette[1], alpha = 0.25)
+  color_tree2 <- adjust_transparency(palette[2], alpha = 0.25)
   color_combined <- palette[3]
   not_color <- adjust_transparency("black", alpha = 0.2)
-  tree1<-ToDiagrammeRGraph(Clone(phylotree_1@tree))
-  tree2<-ToDiagrammeRGraph(Clone(phylotree_2@tree))
-  if(!(length(phylotree_1@clones)==length(phylotree_2@clones))){
+  tree1 <- ToDiagrammeRGraph(Clone(phylotree_1@tree))
+  tree2 <- ToDiagrammeRGraph(Clone(phylotree_2@tree))
+  if (!(length(phylotree_1@clones)==length(phylotree_2@clones))) {
     stop("\n Phylotrees must have the same size")
   }
-  if(equals(phylotree_1,phylotree_2)){
-    tree1<-set_node_attrs(set_edge_attrs(tree1, edge_attr = color, values = color_combined), node_attr = color, values = color_combined)
+  if (equals(phylotree_1,phylotree_2)) {
+    tree1 <- set_node_attrs(set_edge_attrs(tree1, edge_attr = color, 
+                                         values = color_combined), 
+                          node_attr = color, values = color_combined)
     return(tree1)
-  }
-  else{
-    tree1<-set_edge_attrs(tree1, edge_attr = color, values = color_tree1)
-    intersection<-which(phylotree_1@parents==phylotree_2@parents)
-    if(!length(intersection)==0){
-      intersection<-unique(c(intersection, phylotree_1@parents[intersection][phylotree_1@parents[intersection]>0]))
-      inters1<-select_nodes(tree1, conditions=(label %in% intersection))
-      tree1<-set_node_attrs_ws(inters1, node_attr = color, value = color_combined)
-      tree1<-set_node_attrs_ws(invert_selection(select_nodes(tree1, conditions=(label %in% intersection))), node_attr = color, value = not_color)
-      tree1<-set_node_attrs_ws(tree1, node_attr = fontcolor, value = "grey")
-      inter_edges<-get_edge_ids(tree1)[which(get_edges(tree1, return_values="label") %in% get_edges(tree2, return_values="label"))]
-      inters<-select_edges_by_edge_id(tree1, inter_edges)
-      tree1<-set_edge_attrs_ws(inters, edge_attr = color, value = color_combined)
+  } else {
+    tree1 <- set_edge_attrs(tree1, edge_attr = color, values = color_tree1)
+    intersection <- which(phylotree_1@parents == phylotree_2@parents)
+    if (!length(intersection) == 0) {
+      intersection <- unique(c(intersection, 
+                               phylotree_1@parents[intersection][phylotree_1@parents[intersection] > 0]))
+      inters1 <- select_nodes(tree1, conditions = (label %in% intersection))
+      tree1 <- set_node_attrs_ws(inters1, node_attr = color, value = color_combined)
+      tree1 <- set_node_attrs_ws(invert_selection(select_nodes(tree1, conditions=(label %in% intersection))), 
+                                 node_attr = color, value = not_color)
+      tree1 <- set_node_attrs_ws(tree1, node_attr = fontcolor, value = "grey")
+      inter_edges <- get_edge_ids(tree1)[which(get_edges(tree1, return_values = "label") 
+                                               %in% get_edges(tree2, return_values = "label"))]
+      inters <- select_edges_by_edge_id(tree1, inter_edges)
+      tree1 <- set_edge_attrs_ws(inters, edge_attr = color, value = color_combined)
     }
-    edges2<-get_edges(tree2, return_values= "label")[which(!(get_edges(tree2, return_values="label") %in% get_edges(tree1, return_values="label")))]
-    tree1<-add_edges_w_string(tree1, edges2, use_labels=TRUE)
-    tree1<-set_edge_attrs_ws(invert_selection(select_edges(tree1, conditions = (color == color_combined | color ==  color_tree1))), edge_attr = color, value = color_tree2)
-    if(isTRUE(labels)){
-      tree1<-set_node_attrs(tree1, "label", phylotree_1@labels)
+    edges2 <- get_edges(tree2, return_values = "label")[which(!(get_edges(tree2, return_values = "label") 
+                                                                %in% get_edges(tree1, return_values ="label")))]
+    tree1 <- add_edges_w_string(tree1, edges2, use_labels = TRUE)
+    tree1 <- set_edge_attrs_ws(invert_selection(select_edges(tree1, conditions = (color == color_combined | color ==  color_tree1))), 
+                               edge_attr = color, value = color_tree2)
+    if (isTRUE(labels)) {
+      tree1 <- set_node_attrs(tree1, "label", phylotree_1@labels)
     }
     return(tree1)
   }

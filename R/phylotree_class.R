@@ -17,7 +17,10 @@ setClass("Node", slots="Node")
 #' @slot parents A vector representing the parents of the clones in the phylogenetic tree.
 #' @slot tree A \code{Node} class object representing the phylogenetic tree.
 #' @slot labels A vector representing the tags of the genes in the phylogenetic tree.
-setClass("Phylotree", slots=list(B="matrix", clones="vector", genes="vector", parents="vector", tree="Node", labels="vector"))
+setClass("Phylotree", slots = list(
+                                   B = "matrix", clones = "vector", 
+                                   genes = "vector", parents = "vector", 
+                                   tree = "Node", labels = "vector"))
 
 
 get_genes<-function(B){
@@ -83,32 +86,31 @@ get_clones<-function(genes){
 #'                     parents = tree@parents, 
 #'                     tree = tree@tree, 
 #'                     labels = tags)
-create_phylotree<-function(B, clones, genes, parents, tree, labels=NA){
-  if(length(class(B))==1){
-    if(class(B)=="data.frame"){
-      B<-as.matrix(B)
+create_phylotree <- function(B, clones, genes, parents, tree, labels = NA) {
+  if (length(class(B)) == 1) {
+    if (class(B) == "data.frame") {
+      B <- as.matrix(B)
     }
   }
-  if(class(B)[1]!="matrix"){
+  if (class(B)[1] != "matrix") {
     stop("\n B must be a matrix or a data.frame class object")
   }
-  if(nrow(B) != ncol(B)){
+  if (nrow(B) != ncol(B)) {
     stop("\n B must be a square matrix")
   }
-  phylotree<-new("Phylotree", B=B, clones=clones, genes=genes, parents=parents, tree=tree, labels=NA)
-  if(!is.na(labels[1])){
-    if(!length(labels)==length(genes)){
+  phylotree <- new("Phylotree", B=B, clones=clones, genes=genes, 
+                   parents=parents, tree=tree, labels=NA)
+  if (!is.na(labels[1])) {
+    if (!length(labels) == length(genes)) {
       stop("\n \"labels\" and \"genes\" vectors must have the same size")
     }
     phylotree@labels<-labels[as.numeric(phylotree@tree$Get("name"))]
-  }
-  else{
-    if(!is.null(colnames(B))){
-      phylotree@labels<-colnames(B)[as.numeric(phylotree@tree$Get("name"))]
-    }
-    else{
-      mutation_names<-map(1:length(genes), function(x) paste0("mut", x))
-      phylotree@labels<-mutation_names[as.numeric(phylotree@tree$Get("name"))]
+  } else {
+    if (!is.null(colnames(B))) {
+      phylotree@labels <- colnames(B)[as.numeric(phylotree@tree$Get("name"))]
+    } else {
+      mutation_names <- map(1:length(genes), function(x) paste0("mut", x))
+      phylotree@labels <- mutation_names[as.numeric(phylotree@tree$Get("name"))]
     }
   }
   return(phylotree)
@@ -146,35 +148,34 @@ create_phylotree<-function(B, clones, genes, parents, tree, labels=NA){
 #' phylotree_tags <- B_to_phylotree(
 #'                     B = B, 
 #'                     labels = tags)
-B_to_phylotree<-function(B, labels=NA){
-  if(length(class(B))==1){
-    if(class(B)=="data.frame"){
-      B<-as.matrix(B)
+B_to_phylotree <- function(B, labels = NA) {
+  if (length(class(B)) == 1) {
+    if (class(B) == "data.frame") {
+      B <- as.matrix(B)
     }
   }
-  if(class(B)[1]!="matrix"){
+  if (class(B)[1] != "matrix") {
     stop("\n B must be a matrix or a data.frame class object")
   }
-  if(nrow(B) != ncol(B)){
+  if (nrow(B) != ncol(B)) {
     stop("\n B must be a square matrix")
   }
-  genes<-get_genes(B)
-  clones<-get_clones(genes)
-  new<-Node$new(get_root_mutation(B))
-  phylotree<-new("Phylotree", B=B, clones=clones, genes=genes, parents=integer(nrow(B)), tree=new, labels=NA)
-  phylotree@parents<-get_parents(phylotree)
+  genes <- get_genes(B)
+  clones <- get_clones(genes)
+  new <- Node$new(get_root_mutation(B))
+  phylotree <- new("Phylotree", B = B, clones = clones, genes = genes, 
+                   parents = integer(nrow(B)), tree = new, labels = NA)
+  phylotree@parents <- get_parents(phylotree)
   create_tree(phylotree)
-  if(!is.na(labels[1])){
-    if(!length(labels)==length(genes)){
+  if (!is.na(labels[1])) {
+    if (!length(labels) == length(genes)) {
       stop("\n \"labels\" and \"genes\" vectors must have the same size")
     }
-    phylotree@labels<-labels[as.numeric(phylotree@tree$Get("name"))]
-  }
-  else{
-    if(!is.null(colnames(B))){
-      phylotree@labels<-colnames(B)[as.numeric(phylotree@tree$Get("name"))]
-    }
-    else{
+    phylotree@labels <- labels[as.numeric(phylotree@tree$Get("name"))]
+  } else {
+    if (!is.null(colnames(B))) {
+      phylotree@labels <- colnames(B)[as.numeric(phylotree@tree$Get("name"))]
+    } else {
       mutation_names<-map(1:length(genes), function(x) paste0("mut", x))
       phylotree@labels<-unlist(mutation_names[as.numeric(phylotree@tree$Get("name"))])
     }
@@ -200,7 +201,7 @@ B_to_phylotree<-function(B, labels=NA){
 #'
 #' # Get the B matrix of the phyotree
 #' b1 <- phylotree_to_B(phylotree)
-phylotree_to_B<-function(phylotree){
+phylotree_to_B <- function(phylotree) {
   return(phylotree@B)
 }
 
@@ -272,18 +273,19 @@ plot_p<-function(phylotree, proportions){
 #' # into account the proportions of the
 #' # previously generated instance
 #' plot_proportions(phylotree, instance$U, labels=TRUE)
-plot_proportions<-function(phylotree,proportions,labels=FALSE){
-  graphs<-map(1:nrow(proportions), function(x) plot_p(phylotree, proportions[x,]))
-  graph<-graphs[[1]]
-  if(isTRUE(labels)){
-    graph<-set_node_attrs(graph, "label", phylotree@labels)
+plot_proportions <- function(phylotree, proportions, labels = FALSE) {
+  graphs <- map(1:nrow(proportions), function(x) plot_p(phylotree, proportions[x,]))
+  graph <- graphs[[1]]
+  if (isTRUE(labels)) {
+    graph <- set_node_attrs(graph, "label", phylotree@labels)
   }
-  merged<-graph
-  merged<-merge_graphs(phylotree, merged, graphs, 2, labels)
-  merged<-set_edge_attrs(merged, edge_attr=color, values='black')
+  merged <- graph
+  merged <- merge_graphs(phylotree, merged, graphs, 2, labels)
+  merged <- set_edge_attrs(merged, edge_attr = color, values = 'black')
   render_graph(merged)
 }
 
 #' @exportMethod
-setGeneric("plot", function(object, labels=FALSE)standardGeneric("plot"))
-setMethod("plot", signature(object="Phylotree", labels="ANY"), function(object, labels) plot_phylotree(object, labels))
+setGeneric("plot", function(object, labels = FALSE) standardGeneric("plot"))
+setMethod("plot", signature(object = "Phylotree", labels = "ANY"), 
+          function(object, labels) plot_phylotree(object, labels))
