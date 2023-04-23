@@ -290,7 +290,7 @@ phylotree <- B_to_phylotree(B=instance$B)
 
 The `B_to_phylotree` method takes the $B$ matrix of a tumor simulation as its main argument and calculates the values for the other attributes present in `Phylotree` class objects. After instantiating the new `Phylotree` object, we can visualize it using the generic `plot` method for this class:
 
-```{r , fig.align = 'center', fig.class = 'center' , out.width="7.15in", fig.cap="Phylogenetic tree composed by 5 nodes."}
+```{r , out.width="7.15in", fig.cap="Phylogenetic tree composed by 5 nodes."}
 plot(phylotree)
 ```
 
