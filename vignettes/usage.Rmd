@@ -17,8 +17,7 @@ text-align: justify}
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  out.extra = 'style="display:block; margin:auto;"'
+  comment = "#>"
 )
 ```
 
