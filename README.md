@@ -4,7 +4,7 @@ body {
 text-align: justify}
 </style>
 
-<img src="inst/extdata/GeRnika.png" width="25%" />
+<img src="../../../../AppData/Local/Temp/RtmpMXa9iD/temp_libpath16fc6be516f4/GeRnika/extdata/GeRnika.png" width="25%" />
 
 `GeRnika` is an open-source R package that is capable of simulating,
 visualizing and comparing tumor evolution data by using simple commands.
@@ -23,9 +23,9 @@ devtools::install_github("Aitorzan3/GeRnika")
 ```
 
 Note that in order to install the vignettes together with the package,
-it is necessary to attach the packages “markdown”, “knitcitations” and
-“knitr” to your namespace. Once you have done that, you may use the
-following instruction to install de vignettes of `GeRnika`:
+it is necessary to attach the packages “markdown”, “knitcitations”,
+“knitr” and “ggpubr” to your namespace. Once you have done that, you may
+use the following instruction to install de vignettes of `GeRnika`:
 
 ``` r
 # commands for installing the package together with its vignettes from github

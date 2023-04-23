@@ -28,7 +28,6 @@ This is a demo for using the `GeRnika` R package. This document contains example
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(GeRnika)
-library(ggpubr)
 ```
 
 
