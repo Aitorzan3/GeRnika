@@ -17,10 +17,10 @@ text-align: justify}
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  out.extra = 'style="display:block; margin:auto;"'
 )
 ```
-
 
 # Introduction
 
@@ -138,16 +138,18 @@ F_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "mutations",
   Upos <-melt(U)
   colnames(Upos) <- col_names
   Var1 <- col_names[1]
-  Upos<-ggplot(Upos, aes(x=samples, y=mutations, fill=VAF)) + geom_tile(col="black")+ theme_bw() + scale_fill_gradient(limits=c(0.00000000000000000001, 1)) + theme(axis.title.x=element_blank(),
+  Upos<-ggplot(Upos, aes(x=samples, y=mutations, fill=VAF)) + geom_tile(col="black")+    
+    theme(
+         panel.background = element_rect(fill='transparent'),
+         plot.background = element_rect(fill='transparent', color=NA),
+         panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank(),
+         legend.background = element_rect(fill='transparent'),
+         legend.box.background = element_rect(fill='transparent')
+    ) + scale_fill_gradient(limits=c(0.00000000000000000001, 1)) + theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(), 
         axis.title.y=element_blank(),
-        axis.ticks.y=element_blank()) + theme(
-        panel.background = element_rect(fill='transparent'),
-        plot.background = element_rect(fill='transparent', color=NA),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.background = element_rect(fill='transparent'),
-        legend.box.background = element_rect(fill='transparent'))
+        axis.ticks.y=element_blank()) 
   if(values){
     Upos <- Upos + geom_text(aes(label=round(VAF, digits = 2)), size=4)  
   }
@@ -288,7 +290,7 @@ phylotree <- B_to_phylotree(B=instance$B)
 
 The `B_to_phylotree` method takes the $B$ matrix of a tumor simulation as its main argument and calculates the values for the other attributes present in `Phylotree` class objects. After instantiating the new `Phylotree` object, we can visualize it using the generic `plot` method for this class:
 
-```{r, fig.dim = c(5,3.5), fig.align ="center", fig.cap="Phylogenetic tree composed by 5 nodes."}
+```{r , fig.align = 'center', fig.class = 'center' , out.width="7.15in", fig.cap="Phylogenetic tree composed by 5 nodes."}
 plot(phylotree)
 ```
 
@@ -305,7 +307,7 @@ phylotree <- B_to_phylotree(B = instance$B, labels = tags)
 After creating the `Phylotree` class object, we may render it with the custom labels in the following way:
 
 
-```{r, fig.dim = c(5,3.5), fig.cap="Phylogenetic tree of 5 clones with custom tags. The tags in the vector are assigned to the nodes in the tree according to their order. For instance, the first clone in the previous plot is now represented with the first label of the tag vector `mut1`."}
+```{r,  out.width="7.15in", fig.cap="Phylogenetic tree of 5 clones with custom tags. The tags in the vector are assigned to the nodes in the tree according to their order. For instance, the first clone in the previous plot is now represented with the first label of the tag vector `mut1`."}
 
 plot(phylotree, labels = TRUE)
 ```
@@ -388,7 +390,7 @@ instances of the Clonal Deconvolution and Evolution Problem given by the *ILS* a
 
 The example below loads and plots the 3 $B$ matrices of an instance in `B_mats`:
 
-```{r fig.align ="center", eval = FALSE, message = FALSE, warning = FALSE}
+```{r fig.align ="center", out.width="-1.5in",eval = FALSE, message = FALSE, warning = FALSE}
 # Load the predefined B matrices of the package:
 B_mats <- GeRnika::B_mats
 
@@ -568,7 +570,7 @@ render_graph(consensus)
 The consensus tree between `phylotree_real` and `phylotree_opt` using tags and a selected color palette.
 </center>
 
-Note that the parameter $palette$ of this method may take a palette --a vector containing the hexadecimal code of various colors-- composed by three colors in order to use them for building the consensus tree.
+Note that the parameter `palette` of this method may take a palette --a vector containing the hexadecimal code of various colors-- composed by three colors in order to use them for building the consensus tree.
 
 # Session information
 
