@@ -33,7 +33,7 @@ knitr::include_graphics(logo)
 devtools::install_github("Aitorzan3/GeRnika")
 ```
 
-Note that in order to install the vignettes together with the package, it is necessary to attach the packages "markdown" and "knitcitations" to your namespace. Once you have done that, you may use the following instruction to install de vignettes of `GeRnika`:
+Note that in order to install the vignettes together with the package, it is necessary to attach the packages "markdown", "knitcitations" and "knitr" to your namespace. Once you have done that, you may use the following instruction to install de vignettes of `GeRnika`:
 
 ```{r, eval = FALSE}
 # commands for installing the package together with its vignettes from github
