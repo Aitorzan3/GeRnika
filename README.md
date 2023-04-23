@@ -1,9 +1,4 @@
 
-<style>
-body {
-text-align: justify}
-</style>
-
 <img src="inst/extdata/GeRnika.png" width="25%"/>
 
 `GeRnika` is an open-source R package that is capable of simulating,
