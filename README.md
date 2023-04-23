@@ -1,11 +1,16 @@
 
-<img src="inst/extdata/GeRnika.png" width="25%"/>
+<style>
+body {
+text-align: justify}
+</style>
+
+<img src="inst/extdata/GeRnika.png" width="25%" />
 
 `GeRnika` is an open-source R package that is capable of simulating,
 visualizing and comparing tumor evolution data by using simple commands.
 This aims at providing a tool to help researchers to easily simulate
-tumor clonal data and analyze the results of their approaches for studying the
-composition and the evolutionary history of tumors.
+tumor clonal data and analyze the results of their approaches for
+studying the composition and the evolutionary history of tumors.
 
 ## Installation
 
@@ -18,24 +23,13 @@ devtools::install_github("Aitorzan3/GeRnika")
 ```
 
 Note that in order to install the vignettes together with the package,
-it is necessary to attach the packages “markdown” and “knitcitations” to
-your namespace. Once you have done that, you may use the following
-instruction to install de vignettes of `GeRnika`:
+it is necessary to attach the packages “markdown”, “knitcitations” and
+“knitr” to your namespace. Once you have done that, you may use the
+following instruction to install de vignettes of `GeRnika`:
 
 ``` r
 # commands for installing the package together with its vignettes from github
 devtools::install_github("Aitorzan3/GeRnika", build_vignettes = TRUE)
-```
-
-Finally, `GeRnika` can also be installed from Bioconductor using the
-`BiocManager` package via the following command:
-
-``` r
-# commands for installing the package from Bioconductor
-if (!require("GeRnika", quietly = TRUE))
-    install.packages("GeRnika")
-
-BiocManager::install("GeRnika")
 ```
 
 Once the package has been installed, the namespace of `GeRnika` may be
