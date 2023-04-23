@@ -161,9 +161,9 @@ F_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "mutations",
 Ipos <- create_instance(n = 5, m = 8, k = 0.5, selection = "positive")
 
 # Simulate a tumor with neutral evolution:
-Ineu <- create_instance(n = 5, m = 8, k = 0.5, selection="neutral")
+Ineu <- create_instance(n = 5, m = 8, k = 0.5, selection = "neutral")
 
-# Plot the heatmaps of the U matrices of the
+# Plot the heatmaps of the U matrices of the instances:
 U_to_heatmap(Ipos$U)
 U_to_heatmap(Ineu$U)
 ```
@@ -187,7 +187,7 @@ Once we have analyzed the difference between the neutral evolution and positive 
 
 ## Sequencing noise
 
-`GeRnika` has a functionality to add sequencing noise to the simulated instances. In practice, this is done by adding a few parameters to the `create_instance` function. Sequencing noise is added on top of the noise-free $F$ matrix, and the $U$ and $B$ matrices suffer no changes. The `F` slot in the resulting object contains the noisy $F$ matrix, while the `F\_true` slot consists of the original noise-free $F$ matrix. Note that these two slots contain equal matrices when no sequencing noise is added. 
+`GeRnika` has a functionality to add sequencing noise to the simulated instances. In practice, this is done by adding a few parameters to the `create_instance` function. Sequencing noise is added on top of the noise-free $F$ matrix, and the $U$ and $B$ matrices suffer no changes. The `F` slot in the resulting object contains the noisy $F$ matrix, while the `F_true` slot consists of the original noise-free $F$ matrix. Note that these two slots contain equal matrices when no sequencing noise is added. 
 
 Down below we compare an instance we have added sequencing noise to, with its noise-free counterpart.
 
@@ -244,7 +244,7 @@ After analyzing the different parameters for simulating tumor clonal data, we wi
 
 # The `Phylotree` S4 class
 
-In this section, we will be using the `Phylotree` class for the purpose of visualizing phylogenetic trees on the basis of simulated tumor clonal data. The `Phylotree` S4 class is a structure that provides facilities for constructing tumor phylogenetic trees. We will now show the composition of `Phylotree` class objects and the different ways for instantiating them.
+In this section, we will be using the `Phylotree` class for the purpose of visualizing phylogenetic trees on the basis of simulated tumor clonal data. The `Phylotree` S4 class is a structure that provides facilities for constructing tumor phylogenetic trees. We will now show the composition of `Phylotree` class objects and the method for instantiating them.
 
 ## Structure of `Phylotree` class objects
 
@@ -256,7 +256,7 @@ The attributes of `Phylotree` class may be visualized in the following table:
 | ---------------- | ---------------------------------------------------------- | ----------------- |
 | B                | Binary square matrix containing the mutations of each clone in the tumor                                        |  Matrix |
 | clones                | Clones in the $B$ matrix of the tumor                                          |  Vector |
-| genes                | Genes represented in the $B$ matrix of the tumor                                |  Vector      |
+| genes                | Genes that have mutated according to the $B$ matrix of the tumor                                |  Vector      |
 | parents        | Parents of the clones in the phylogenetic tree | Vector
 | tree            | Structure that represents the phylogenetic tree | `Node` |
 | labels | Tags of the genes in the phylogenetic tree                    |  Vector |
@@ -267,7 +267,7 @@ Once we have explained the structure of `Phylotree` class objects, we will proce
 
 ## Instantiation of `Phylotree` class objects
 
-The mutations of each clone in a tumor sample are represented in an `n` x `n` binary genotype $B$ matrix. Each $b_{i}$ row of the $B$ matrix represents the mutations in clone $v_{i}$. Note that we just need a $B$ matrix of a tumor simulation in order to instantiate a new `Phylotree`class object.
+The mutations of each clone in a tumor sample are represented in an `n` x `n` binary genotype $B$ matrix. Each $b_{i}$ row of the $B$ matrix represents the mutations in clone $v_{i}$. Note that we just need a $B$ matrix of a tumor simulation in order to instantiate a new `Phylotree` class object.
 
 Now, we will show an example of the instantiation of a `Phylotree` class object:
 
@@ -312,11 +312,11 @@ plot(phylotree, labels = TRUE)
 ```
 
 
-This is one of the possible methods for instantiating `Phylotree` class objects on the basis of the $B$ matrix of a tumor. However, this package also grants the option of using the general constructor for the `Phylotree` S4 class for instantiating new `Phylotree` objects, which allows users to give specific values to the attributes of a new `Phylotree` class object.
+This is one of the possible methods for instantiating `Phylotree` class objects on the basis of the $B$ matrix of a tumor. However, this package also grants the option of using the general constructor for the `Phylotree` S4 class for instantiating new `Phylotree` objects, which allows users to give custom values to the attributes of a new `Phylotree` class object.
 
 ## Resizing nodes to clone proportions
 
-When plotting a `Phylotree` class object, its nodes can be resized according to some given proportions of the clones that compose the tumor samples. To do this, an additional $U$ matrix determining the proportions of the clones can be passed to the `create_instance` function.
+When plotting a `Phylotree` class object, its nodes can be resized according to some given proportions of the clones that compose the tumor samples. To do this, the `plot_proportions` function takes a `phylotree` class object and an additional $U$ matrix determining the proportions of the clones.
 
 ```{r, eval=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions. In this case, there are 4 plots because we have generated an instance based on 4 samples. Then, each tree represents the proportions of the clones in each sample."}
 # Simulate a tumor
@@ -329,7 +329,7 @@ tree <- B_to_phylotree(B = instance$B)
 plot_proportions(tree, instance$U)
 ```
 
-```{r, echo=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions."}
+```{r, echo=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions. In this case, there are 4 plots because we have generated an instance based on 4 samples. Then, each tree represents the proportions of the clones in each sample."}
 # Simulate a tumor
 instance <- create_instance(5, 4, 0.5, selection="neutral", noisy=FALSE, seed=1)
 
@@ -340,7 +340,6 @@ tree<-B_to_phylotree(instance$B)
 plot_proportions(tree, instance$U)
 
 ```
-
 
 Again, in this case we can also use custom labels for the nodes:
 
@@ -376,16 +375,13 @@ Once we have shown the usage of the methods for instantiating `Phylotree` class 
 
 # Comparing and combining phylogenetic trees
 
-`GeRnika` presents different functionalities for comparing tumor phylogenies. In order to show them, we will use the `B\_mats` object included in the`GeRnika` package. This contains 10 $B$ matrix trios. Each trio corresponds to a different instance, and the $B$ matrices arise in the course of solving the Clonal Deconvolution and Evolution Problem (CDEP) for that instance, as follows:
+`GeRnika` presents different functionalities for comparing tumor phylogenies. In order to show them, we will use the `B_mats` object included in the `GeRnika` package. This contains 10 $B$ matrix trios. Each trio corresponds to a different instance, and the $B$ matrices arise in the course of solving the Clonal Deconvolution and Evolution Problem (CDEP) for that instance, as follows:
 
-ices based on the solution of various 
-instances of the Clonal Deconvolution and Evolution Problem given by the *ILS* and *GRASP* methods. This trios consist of the following matrices:
+These matrices are based on the solution of various instances of the Clonal Deconvolution and Evolution Problem given by the *ILS* and *GRASP* methods. This trios consist of the following slots:
 
 - `B_true`: The real $B$ matrix of a tumor.
 - `B_Grasp`: A $B$ matrix generated througha  greedy, randomized adaptive heuristic strategy (GRASP) given an observed F matrix for the $B\_true$ matrix
 - `B_opt`: The optimal $B$ matrix found by an iterated local search approach given an observed $F$ matrix for the $B\_true$ matrix.
-
-
 
 The example below loads and plots the 3 $B$ matrices of an instance in `B_mats`:
 
@@ -461,15 +457,15 @@ equals(phylotree_1 = phylotree_real, phylotree_2 = phylotree_real)
 equals(phylotree_1 = phylotree_real, phylotree_2 = phylotree_opt)
 ```
 
-Equal phylogenetic trees, by definition, are composed by the same nodes, connected by the same edges. As a result, this method returns `TRUE` when`phylotree_real` is compared with itself. Likewise, as `phylotree_real` and `phylotree_opt` are not equal, this method returns `FALSE` when we check whether they are equal or not.
+Equal phylogenetic trees, by definition, are composed by the same nodes, connected by the same edges. As a result, this method returns `TRUE` when `phylotree_real` is compared with itself. Likewise, as `phylotree_real` and `phylotree_opt` are not equal, this method returns `FALSE` when we check whether they are equal or not.
 
 Nevertheless, even though two trees may not be equal, they may have common subtrees.
 
 ## The `find_common_subtrees` method
 
-The `find_common_subtrees` function calculates and plots all the maximal common subtrees between two phylogenetic trees. Moreover, it also outputs the number of common and independent (the ones not shared by both trees) edges of the trees together. Finally, the method outputs the distance between the trees, which is computed as the sum of their independent edges.
+The `find_common_subtrees` function calculates and plots all the maximal common subtrees between two phylogenetic trees. Moreover, it also outputs the number of common and independent (the ones not shared by both trees) edges of the trees. Finally, the method outputs the distance between the trees, which is computed as the sum of their independent edges.
 
-```{r fig.align ="center", fig.dim = c(6,4), out.width = "7.25in"}
+```{r fig.align ="center",  out.width = "7.25in"}
 find_common_subtrees(phylotree_1 = phylotree_real, phylotree_2 = phylotree_grasp)
 ```
 <center>
@@ -507,9 +503,9 @@ find_common_subtrees(phylotree_1 = phylotree_real, phylotree_2 = phylotree_opt, 
 The common subtrees between `phylotree_real` and `phylotree_opt` labelled using custom tags.
 </center>
 
-According to the plots from above, we conclude that `phylotree_real` shares more edges with `phylotree_opt` than it does with ´phylotree_grasp`.
+According to the plots from above, we conclude that `phylotree_real` shares more edges with `phylotree_opt` than it does with `phylotree_grasp`.
 
-`GeRnika`offers an additional method to compare two phylogenetic trees: a consensus tree that shows the union of the nodes and edges of both trees. 
+`GeRnika` offers an additional method to compare two phylogenetic trees: a consensus tree that shows the union of the nodes and edges of both trees. 
 
 ## The *combine_trees* method
 
@@ -539,7 +535,7 @@ render_graph(consensus_real_grasp)
 The consensus tree between `phylotree_real` and `phylotree_grasp`.
 </center>
 
-```{r, out.width="47.5%", fig.dim = c(7,8), out.width = "7.5in", warning=FALSE}
+```{r, out.width="47.5%", fig.dim = c(5,6), out.width = "7.5in", warning=FALSE}
 # Rendering the consensus between phylotree_real and phylotree_opt
 render_graph(consensus_real_opt)
 ```
@@ -550,9 +546,9 @@ The consensus tree between `phylotree_real` and `phylotree_opt`.
 
 The above figures present the consensus tree between `phylotree_real` and `phylotree_opt` and the consensus tree between `phylotree_real` and `phylotree_grasp`, respectively. 
 
-Users can customize both the colors and the labels of the nodes. The latter can be done by providing a custom palette --a vector containing the hexadecimal code of various colors-- of 3 elements such as `c("#AAAAAAAA","#BBBBBBBB","#CCCCCCCC")`. Additionally, the user can use one of the color palettes included in GeRnika: *Lancet*, *NEJM* and *Simpsons* (default). 
+Users can customize both the labels and the colors of the nodes. The latter can be done by providing a custom palette --a vector containing the hexadecimal code of various colors-- of 3 elements such as `c("#AAAAAAAA","#BBBBBBBB","#CCCCCCCC")`. Additionally, the user can use one of the color palettes included in GeRnika: *Lancet*, *NEJM* and *Simpsons* (default). 
 
-```{r fig.align ="center", fig.height = 8.5, fig.width = 9.5 , out.width = "7in"}
+```{r fig.align ="center", fig.height = 5, fig.width = 6 , out.width = "7in"}
 # Load one of the default palettes of the package:
 palette <- GeRnika::palettes$Lancet
 
@@ -568,8 +564,6 @@ render_graph(consensus)
 <center>
 The consensus tree between `phylotree_real` and `phylotree_opt` using tags and a selected color palette.
 </center>
-
-Note that the parameter `palette` of this method may take a palette --a vector containing the hexadecimal code of various colors-- composed by three colors in order to use them for building the consensus tree.
 
 # Session information
 
