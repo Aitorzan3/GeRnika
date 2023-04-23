@@ -1,8 +1,4 @@
 
-<style>
-body {
-text-align: justify}
-</style>
 
 <img src="inst/extdata/GeRnika.png" width="25%" />
 
