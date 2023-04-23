@@ -277,16 +277,20 @@ plot_proportions <- function(phylotree, proportions, labels = FALSE) {
   if (is.matrix(proportions)) {
     graphs <- map(1:nrow(proportions), function(x) plot_p(phylotree, proportions[x,]))
     graph <- graphs[[1]]
+    if (isTRUE(labels)) {
+      graph <- set_node_attrs(graph, "label", phylotree@labels)
+    }
     merged <- graph
     merged <- merge_graphs(phylotree, merged, graphs, 2, labels)
   } else if (is.vector(proportions)) {
     merged <- plot_p(phylotree, proportions)
+    if (isTRUE(labels)) {
+      merged <- set_node_attrs(merged, "label", phylotree@labels)
+    }
   } else {
     stop("\n the proportions parameter must be a matrix or a vector")
   }
-  if (isTRUE(labels)) {
-    merged <- set_node_attrs(merged, "label", phylotree@labels)
-  }
+
   merged <- set_edge_attrs(merged, edge_attr = color, values = 'black')
   render_graph(merged)
 }
