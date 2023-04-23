@@ -6,7 +6,7 @@ source("R/clone.R")
 source("R/utils.R")
 
 setClass("Node", slots="Node")
-#' @exportClass
+#' @export
 #' @name Phylotree_class
 #' @title Phylotree_class
 #' S4 class to represent phylogenetic trees
@@ -295,7 +295,7 @@ plot_proportions <- function(phylotree, proportions, labels = FALSE) {
   render_graph(merged)
 }
 
-#' @exportMethod
+#' @export
 setGeneric("plot", function(object, labels = FALSE) standardGeneric("plot"))
 setMethod("plot", signature(object = "Phylotree", labels = "ANY"), 
           function(object, labels) plot_phylotree(object, labels))

@@ -8,3 +8,6 @@ export(equals)
 export(find_common_subtrees)
 export(phylotree_to_B)
 export(plot_proportions)
+export(plot)
+exportClasses(Phylotree)
+
