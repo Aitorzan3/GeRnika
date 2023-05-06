@@ -1,10 +1,6 @@
 
-<style>
-body {
-text-align: justify}
-</style>
 
-<img src="../../../R/win-library/4.1/GeRnika/extdata/GeRnika.png" width="25%" />
+<img src="inst/extdata/GeRnika.png" width="25%" />
 
 `GeRnika` is an open-source R package that is capable of simulating,
 visualizing and comparing tumor evolution data by using simple commands.
