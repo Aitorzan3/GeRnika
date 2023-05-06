@@ -34,7 +34,7 @@ library(ggpubr)
 
 # Simulating tumor clonal data
 
-The simulation of tumor clonal data consists of simulating a matrix $F$ that contains the mutation frequency values of a series of mutations in a collection of tumor biopsies or samples. The matrix $F$ is calculated as the product of a matrix $B$ that represents the phylogeny of the tumor, and a matrix $U$, which contains the clone proportions in each particular sample of that tumor.
+The simulation of tumor clonal data consists of simulating a matrix $\boldsymbol{F}$ that contains the mutation frequency values of a series of mutations in a collection of tumor biopsies or samples. The matrix $\boldsymbol{F}$ is calculated as the product of a matrix $\boldsymbol{B}$ that represents the phylogeny of the tumor, and a matrix $\boldsymbol{U}$, which contains the clone proportions in each particular sample of that tumor.
 
 Tumor data can be simulated through the `create_instance` function. The information about its parameters and their usage may be checked in the following table:
 
@@ -44,7 +44,7 @@ Tumor data can be simulated through the `create_instance` function. The informat
 | `m`                | Number of samples.                                          |  Discrete No. |
 | `k`                | Topology parameter that controls for the linearity of the topology.                                    |  Continuous No.      |
 | `selection`        | Evolution model followed by the tumor.     | "positive","neutral" |
-| `noise`            | Add sequencing noise to the values in the $F$ matrix. | Boolean (`TRUE` by default) |
+| `noise`            | Add sequencing noise to the values in the $\boldsymbol{F}$ matrix. | Boolean (`TRUE` by default) |
 | `depth` | Average number of reads that map to the same locus (in noisy cases), also known as sequencing depth.               |  Discrete No. (30 by default) |
 
 
@@ -58,7 +58,7 @@ I <- create_instance(n = 5, m = 4, k =0.5, selection="neutral", seed=1)
 I <- create_instance(n = 5, m = 4, k = 0.5, selection = "neutral")
 ```
 
-This method returns the previously mentioned $F$, $B$ and $U$ matrices and an additional $F\_true$ matrix, which we will describe later.
+This method returns the previously mentioned $\boldsymbol{F}$, $\boldsymbol{B}$ and $\boldsymbol{U}$ matrices and an additional $\boldsymbol{F_{true}}$ matrix, which we will describe later.
 
 Once we have shown an example of the instantiation of a tumor, we will analyze the effect of varying the values of the parameters.
 
@@ -108,7 +108,7 @@ After analyzing the effect of parameter `k` in the generation of tumor data, we 
 
 With this parameter we control for the evolution model the tumor follows, either positive selection or neutral evolution. A positive selection-driven evolution model assumes that a few mutations provide cell growth advantage, whereas the remaining mutations do not. Conversely, neutral evolution models assume that, in general, none of the mutations provide significant fitness advantage. As a consequence, tumors under positive selection are dominated by a few clones whereas the rest of clones are present in small proportions. Instead, in tumors with a neutral evolution, all the clones are present in similar proportions. 
 
-The clone proportions are well observed in the $U$ matrix, as this indeed contains the fraction of each clone in each sample of the tumor. Below, we can see this effect with a few examples:
+The clone proportions are well observed in the $\boldsymbol{U}$ matrix, as this indeed contains the fraction of each clone in each sample of the tumor. Below, we can see this effect with a few examples:
 
 ```{r, message = FALSE, echo = FALSE, warning = FALSE}
 U_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "clones", "proportion")){
@@ -168,7 +168,7 @@ U_to_heatmap(Ipos$U)
 U_to_heatmap(Ineu$U)
 ```
 
-```{r, message = FALSE, echo = FALSE,  warning = FALSE, fig.align ="center", fig.dim = c(7.5,8), fig.cap="Heatmaps of the $U$ matrices of an instance of a tumor under positive selection (top) and neutral evolution (bottom)."}
+```{r, message = FALSE, echo = FALSE,  warning = FALSE, fig.align ="center", fig.dim = c(7.5,8), fig.cap="Heatmaps of the $\boldsymbol{U}$ matrices of an instance of a tumor under positive selection (top) and neutral evolution (bottom)."}
 # simulate a tumor with neutral selection:
 Ipos <- create_instance(n=5, m=8, k=0.5, selection="positive", seed = 1)
 
@@ -187,7 +187,7 @@ Once we have analyzed the difference between the neutral evolution and positive 
 
 ## Sequencing noise
 
-`GeRnika` has a functionality to add sequencing noise to the simulated instances. In practice, this is done by adding a few parameters to the `create_instance` function. Sequencing noise is added on top of the noise-free $F$ matrix, and the $U$ and $B$ matrices suffer no changes. The `F` slot in the resulting object contains the noisy $F$ matrix, while the `F_true` slot consists of the original noise-free $F$ matrix. Note that these two slots contain equal matrices when no sequencing noise is added. 
+`GeRnika` has a functionality to add sequencing noise to the simulated instances. In practice, this is done by adding a few parameters to the `create_instance` function. Sequencing noise is added on top of the noise-free $\boldsymbol{F}$ matrix, and the $U$ and $\boldsymbol{B}$ matrices suffer no changes. The `F` slot in the resulting object contains the noisy $\boldsymbol{F}$ matrix, while the `F_true` slot consists of the original noise-free $\boldsymbol{F}$ matrix. Note that these two slots contain equal matrices when no sequencing noise is added. 
 
 Down below we compare an instance we have added sequencing noise to, with its noise-free counterpart.
 
@@ -208,7 +208,7 @@ Fnoise <- F_to_heatmap(abs(Inoisy$F - Inoisy$F_true))
 ggarrange(Fnoise)
 ```
 
-The heatmap from above shows the difference between the $F$ matrix and the $F\_true$ matrix of a tumor instance, i.e. the noise added to the original VAF values of our samples. The amount of noise added is controlled by the depth parameter, which replicates the effect that the sequencing depth has on the noise level. This is explained in more detail in the following subsection.
+The heatmap from above shows the difference between the $\boldsymbol{F}$ matrix and the $\boldsymbol{F_{true}}$ matrix of a tumor instance, i.e. the noise added to the original VAF values of our samples. The amount of noise added is controlled by the depth parameter, which replicates the effect that the sequencing depth has on the noise level. This is explained in more detail in the following subsection.
 
 ### Sequencing read depth
 
@@ -255,8 +255,8 @@ The attributes of `Phylotree` class may be visualized in the following table:
 | Parameter        | Description                                                | Type |
 | ---------------- | ---------------------------------------------------------- | ----------------- |
 | B                | Binary square matrix containing the mutations of each clone in the tumor                                        |  Matrix |
-| clones                | Clones in the $B$ matrix of the tumor                                          |  Vector |
-| genes                | Genes that have mutated according to the $B$ matrix of the tumor                                |  Vector      |
+| clones                | Clones in the $\boldsymbol{B}$ matrix of the tumor                                          |  Vector |
+| genes                | Genes that have mutated according to the $\boldsymbol{B}$ matrix of the tumor                                |  Vector      |
 | parents        | Parents of the clones in the phylogenetic tree | Vector
 | tree            | Structure that represents the phylogenetic tree | `Node` |
 | labels | Tags of the genes in the phylogenetic tree                    |  Vector |
@@ -267,7 +267,7 @@ Once we have explained the structure of `Phylotree` class objects, we will proce
 
 ## Instantiation of `Phylotree` class objects
 
-The mutations of each clone in a tumor sample are represented in an `n` x `n` binary genotype $B$ matrix. Each $b_{i}$ row of the $B$ matrix represents the mutations in clone $v_{i}$. Note that we just need a $B$ matrix of a tumor simulation in order to instantiate a new `Phylotree` class object.
+The mutations of each clone in a tumor sample are represented in an `n` x `n` binary genotype $\boldsymbol{B}$ matrix. Each $b_{i}$ row of the $\boldsymbol{B}$ matrix represents the mutations in clone $v_{i}$. Note that we just need a $\boldsymbol{B}$ matrix of a tumor simulation in order to instantiate a new `Phylotree` class object.
 
 Now, we will show an example of the instantiation of a `Phylotree` class object:
 
@@ -287,7 +287,7 @@ instance <- create_instance(n=5, m=4, k=0.5, selection="positive", noisy=FALSE, 
 phylotree <- B_to_phylotree(B=instance$B)
 ```
 
-The `B_to_phylotree` method takes the $B$ matrix of a tumor simulation as its main argument and calculates the values for the other attributes present in `Phylotree` class objects. After instantiating the new `Phylotree` object, we can visualize it using the generic `plot` method for this class:
+The `B_to_phylotree` method takes the $\boldsymbol{B}$ matrix of a tumor simulation as its main argument and calculates the values for the other attributes present in `Phylotree` class objects. After instantiating the new `Phylotree` object, we can visualize it using the generic `plot` method for this class:
 
 ```{r , out.width="7.15in", fig.cap="Phylogenetic tree composed by 5 nodes."}
 plot(phylotree)
@@ -312,11 +312,11 @@ plot(phylotree, labels = TRUE)
 ```
 
 
-This is one of the possible methods for instantiating `Phylotree` class objects on the basis of the $B$ matrix of a tumor. However, this package also grants the option of using the general constructor for the `Phylotree` S4 class for instantiating new `Phylotree` objects, which allows users to give custom values to the attributes of a new `Phylotree` class object.
+This is one of the possible methods for instantiating `Phylotree` class objects on the basis of the $\boldsymbol{B}$ matrix of a tumor. However, this package also grants the option of using the general constructor for the `Phylotree` S4 class for instantiating new `Phylotree` objects, which allows users to give custom values to the attributes of a new `Phylotree` class object.
 
 ## Resizing nodes to clone proportions
 
-When plotting a `Phylotree` class object, its nodes can be resized according to some given proportions of the clones that compose the tumor samples. To do this, the `plot_proportions` function takes a `phylotree` class object and an additional $U$ matrix determining the proportions of the clones.
+When plotting a `Phylotree` class object, its nodes can be resized according to some given proportions of the clones that compose the tumor samples. To do this, the `plot_proportions` function takes a `phylotree` class object and an additional $\boldsymbol{U}$ matrix determining the proportions of the clones.
 
 ```{r, eval=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions. In this case, there are 4 plots because we have generated an instance based on 4 samples. Then, each tree represents the proportions of the clones in each sample."}
 # Simulate a tumor
@@ -375,15 +375,15 @@ Once we have shown the usage of the methods for instantiating `Phylotree` class 
 
 # Comparing and combining phylogenetic trees
 
-`GeRnika` presents different functionalities for comparing tumor phylogenies. In order to show them, we will use the `B_mats` object included in the `GeRnika` package. This contains 10 $B$ matrix trios. Each trio corresponds to a different instance, and the $B$ matrices arise in the course of solving the Clonal Deconvolution and Evolution Problem (CDEP) for that instance, as follows:
+`GeRnika` presents different functionalities for comparing tumor phylogenies. In order to show them, we will use the `B_mats` object included in the `GeRnika` package. This contains 10 $\boldsymbol{B}$ matrix trios. Each trio corresponds to a different instance, and the $\boldsymbol{B}$ matrices arise in the course of solving the Clonal Deconvolution and Evolution Problem (CDEP) for that instance, as follows:
 
 These matrices are based on the solution of various instances of the Clonal Deconvolution and Evolution Problem given by the *ILS* and *GRASP* methods. This trios consist of the following slots:
 
-- `B_true`: The real $B$ matrix of a tumor.
-- `B_Grasp`: A $B$ matrix generated througha  greedy, randomized adaptive heuristic strategy (GRASP) given an observed F matrix for the $B\_true$ matrix
-- `B_opt`: The optimal $B$ matrix found by an iterated local search approach given an observed $F$ matrix for the $B\_true$ matrix.
+- `B_true`: The real $\boldsymbol{B}$ matrix of a tumor.
+- `B_Grasp`: A $\boldsymbol{B}$ matrix generated througha  greedy, randomized adaptive heuristic strategy (GRASP) given an observed F matrix for the $\boldsymbol{B_{true}}$ matrix
+- `B_opt`: The optimal $\boldsymbol{B}$ matrix found by an iterated local search approach given an observed $\boldsymbol{F}$ matrix for the $\boldsymbol{B_{true}}$ matrix.
 
-The example below loads and plots the 3 $B$ matrices of an instance in `B_mats`:
+The example below loads and plots the 3 $\boldsymbol{B}$ matrices of an instance in `B_mats`:
 
 ```{r fig.align ="center", out.width="-1.5in",eval = FALSE, message = FALSE, warning = FALSE}
 # Load the predefined B matrices of the package:
@@ -436,7 +436,7 @@ render_graph(combine_graphs(ToDiagrammeRGraph(phylotree_real@tree),combine_graph
 ```
 
 <center>
-Phylogenetic trees according to a trio of $B$ matrices in `B_mats`.
+Phylogenetic trees according to a trio of $\boldsymbol{B}$ matrices in `B_mats`.
 </center>
 
 
