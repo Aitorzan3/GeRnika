@@ -2,6 +2,20 @@ source("R/utils.R")
 
 sample.vec <- function(x, ...) x[sample(length(x), ...)]
 
+#' Create topology and B matrix
+#'
+#' \code{create_B} is ...
+#'
+#' @param n number of clones.
+#' @param k topology parameter
+#'
+#' @return Matrix containing...
+#' @export
+#' @details Aqui va la descripcion
+#'
+#' Aqui sigue la descripcion
+#'
+#' @examples
 create_B <- function(n, k) {
   B <- diag(n)
   muts <- sample(1:n, n)
@@ -25,6 +39,22 @@ create_B <- function(n, k) {
   return(B)
 }
 
+#' Calculate local frequencies in multifurcations
+#'
+#' \code{.distribute_freqs} is ...
+#'
+#' @param B B matrix
+#' @param clone_idx clone_idx
+#' @param clone_proportions clone_proportions
+#' @param selection selection
+#'
+#' @return Vector containing...
+#' @export
+#' @details Aqui va la descripcion
+#'
+#' Aqui sigue la descripcion
+#'
+#' @examples
 .distribute_freqs <- function(B, clone_idx, clone_proportions, selection) {
   dirich_params <- tibble(positive = rep(0.3, 2),
                           neutral = c(5, 10))
@@ -40,6 +70,20 @@ create_B <- function(n, k) {
   return(clone_proportions)
 }
 
+#' Calculate clone proportions...
+#'
+#' \code{calc_clone_proportions} is ...
+#'
+#' @param B B matrix
+#' @param selection selection
+#'
+#' @return Tibble containing...
+#' @export
+#' @details Aqui va la descripcion
+#'
+#' Aqui sigue la descripcion
+#'
+#' @examples
 calc_clone_proportions <- function(B, selection) {
   n <- nrow(B)
   clone_proportions <- rep(1, n)
@@ -53,6 +97,19 @@ calc_clone_proportions <- function(B, selection) {
   return(clone_proportion_df)
 }
 
+#' Place clones in space...
+#'
+#' \code{place_clones_space} is ...
+#'
+#' @param B B matrix
+#'
+#' @return List containing...
+#' @export
+#' @details Aqui va la descripcion
+#'
+#' Aqui sigue la descripcion
+#'
+#' @examples
 place_clones_space <- function(B) {
   n <- nrow(B)
   max_sep <- 4
@@ -73,6 +130,23 @@ place_clones_space <- function(B) {
   return(list(spatial_coords = spatial_coords, x = x))
 }
 
+#' Create U matrix...
+#'
+#' \code{create_U} is ...
+#'
+#' @param B B matrix
+#' @param clone_proportions clone_proportions
+#' @param density_coords density_coords
+#' @param m number of samples
+#' @param x x
+#'
+#' @return Matrix containing...
+#' @export
+#' @details Aqui va la descripcion
+#'
+#' Aqui sigue la descripcion
+#'
+#' @examples
 create_U <- function(B, clone_proportions, density_coords, m, x) {
   n_cells <- 100
   clone_order <- setdiff(colnames(density_coords), "idx") # for U column names
@@ -98,6 +172,21 @@ create_U <- function(B, clone_proportions, density_coords, m, x) {
   return(U)
 }
 
+#' Add noise...
+#'
+#' \code{add_noise} is ...
+#'
+#' @param F F matrix
+#' @param depth depth
+#' @param overdispersion overdispersion
+#'
+#' @return Matrix containing...
+#' @export
+#' @details Aqui va la descripcion
+#'
+#' Aqui sigue la descripcion
+#'
+#' @examples
 add_noise <- function(F, depth, overdispersion) {
   warn <- getOption("warn")
   #options(warn=-1)
