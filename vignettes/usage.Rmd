@@ -157,6 +157,30 @@ F_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "mutations",
 ```
 
 ```{r, message = FALSE, eval = FALSE}
+# Function to plot heatmap of the U matrix
+U_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "clones", "proportion")) {
+  Upos <- melt(U)
+  colnames(Upos) <- col_names
+  Var1 <- col_names[1]
+  Upos<-ggplot(Upos, aes(x = samples, y = clones, fill = proportion)) + geom_tile(col = "black") 
+         +  theme(
+            panel.background = element_rect(fill = 'transparent'),
+            plot.background = element_rect(fill = 'transparent', color = NA),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            legend.background = element_rect(fill = 'transparent'),
+            legend.box.background = element_rect(fill = 'transparent')) 
+         +  scale_fill_gradient(limits = c(0.0000000000001, 1)) + theme(axis.title.x = element_blank(),
+            axis.ticks.x = element_blank(), 
+            axis.title.y = element_blank(),
+            axis.ticks.y = element_blank())
+  if (values) {
+    Upos <- Upos + geom_text(aes(label = proportion), size = 4)  
+  }
+  Upos
+}
+
+
 # Simulate a tumor with positive selection:
 Ipos <- create_instance(n = 5, m = 8, k = 0.5, selection = "positive")
 
