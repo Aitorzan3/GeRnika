@@ -9,9 +9,8 @@ Description: `GeRnika` is an open-source R package that is capable of simulating
 Encoding: UTF-8
 imports: data.tree, DiagrammeR, purrr, ggplot2, reshape2,
          colorspace, dplyr
-Depends: data.tree, DiagrammeR, purrr, ggplot2, reshape2,
-         colorspace, dplyr, R (>= 2.10)
-RoxygenNote: 7.2.2
+Depends: R (>= 4.00)
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr, rmarkdown, knitcitations, ggpubr
 Suggests: knitr, rmarkdown, knitcitations, ggpubr
 NeedsCompilation: no
