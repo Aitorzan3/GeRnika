@@ -40,22 +40,19 @@ Tumor data can be simulated through the `create_instance` function. The informat
 
 | Parameter        | Description                                                | Type |
 | ---------------- | ---------------------------------------------------------- | ----------------- |
-| `n`                | Number of mutations/clones.                                           |  Discrete No. |
-| `m`                | Number of samples.                                          |  Discrete No. |
-| `k`                | Topology parameter that controls for the linearity of the topology.                                    |  Continuous No.      |
-| `selection`        | Evolution model followed by the tumor.     | "positive","neutral" |
-| `noise`            | Add sequencing noise to the values in the $\boldsymbol{F}$ matrix. | Boolean (`TRUE` by default) |
-| `depth` | Average number of reads that map to the same locus (in noisy cases), also known as sequencing depth.               |  Discrete No. (30 by default) |
+| `n`                | Number of mutations/clones ($n$).                                           |  Natural number |
+| `m`                | Number of samples ($s$).                                          |  Natural number |
+| `k`                | Topology parameter that controls for the linearity of the topology.                                    |  Positive rational number      |
+| `selection`        | Evolution model followed by the tumor.     | Categorical: "positive" or "neutral" |
+| `noisy`            | Add sequencing noise to the values in the $F$ matrix. | Boolean |
+| `depth` | (only if `noise` = `TRUE`) Average number of reads that map to the same locus, also known as sequencing depth.               |  Natural number |
+| `seed` | Seed for the pseudo-random topology generator               |  Real number |
 
 
 The following is an example of the generation of a noise-free instance of a tumor that is composed of 5 clones/mutations that has evolved under neutral evolution and has a `k` value of 0.5. 5 samples have been taken from it:
 
-```{r message = TRUE, echo = FALSE}
-I <- create_instance(n = 5, m = 4, k =0.5, selection="neutral", seed=1)
-```
-
-```{r message = FALSE, eval = FALSE}
-I <- create_instance(n = 5, m = 4, k = 0.5, selection = "neutral")
+```{r message = TRUE}
+I <- create_instance(n = 5, m = 4, k = 0.5, selection = "neutral", seed = 1)
 ```
 
 This method returns the previously mentioned $\boldsymbol{F}$, $\boldsymbol{B}$ and $\boldsymbol{U}$ matrices and an additional $\boldsymbol{F_{true}}$ matrix, which we will describe later.
@@ -66,33 +63,17 @@ Once we have shown an example of the instantiation of a tumor, we will analyze t
 
 `k` is the parameter that controls for the linearity of the topology of the tumor. As a result, increasing values of `k` lead to rather branched phylogenies, while lower values of `k` produce trees that tend to linearity.
 
-```{r, message = FALSE, eval = FALSE,  fig.dim = c(6.5,6)}
-# Simulate a tumor with k=0:
-I1 <- create_instance(n = 5, m = 4, k = 0, selection = "neutral")
 
-# Simulate a tumor with k=2:
-I2 <- create_instance(n = 5, m = 4, k = 8, selection = "neutral")
+```{r, message = FALSE, warning = FALSE, fig.align ="center", fig.dim = c(6.5,6), fig.cap="On the left the plot of `tree1` (`k=0`), on the right the plot of `tree2` (`k=8`)." }
+# Simulate a tumor with k=0:
+I1 <- create_instance(n = 5, m = 4, k = 0, selection = "neutral", seed = 1)
+
+# Simulate a tumor with k=1:
+I2 <- create_instance(n = 5, m = 4, k = 8, selection = "neutral", seed = 1)
 
 # Create a `Phylotree` class object for each tumor:
 tree1 <- B_to_phylotree(B = I1$B)
 tree2 <- B_to_phylotree(B = I2$B)
-
-# Plot both trees
-plot(tree1)
-plot(tree2)
-```
-
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align ="center", fig.dim = c(6.5,6), fig.cap="On the left the plot of `tree1` (`k=0`), on the right the plot of `tree2` (`k=8`)." }
-# Simulate a tumor with k=0:
-I1 <- create_instance(n=5, m=4, k=0, selection="neutral", seed = 1)
-
-# Simulate a tumor with k=1:
-I2 <- create_instance(n=5, m=4, k=8, selection="neutral", seed = 1)
-
-# Create a `Phylotree` class object for each tumor:
-tree1 <- B_to_phylotree(B=I1$B)
-tree2 <- B_to_phylotree(B=I2$B)
 
 # Plot both trees
 render_graph(combine_graphs(ToDiagrammeRGraph(tree1@tree), ToDiagrammeRGraph(tree2@tree)))
@@ -110,99 +91,40 @@ With this parameter we control for the evolution model the tumor follows, either
 
 The clone proportions are well observed in the $\boldsymbol{U}$ matrix, as this indeed contains the fraction of each clone in each sample of the tumor. Below, we can see this effect with a few examples:
 
-```{r, message = FALSE, echo = FALSE, warning = FALSE}
+```{r, message = FALSE, echo = TRUE,  warning = FALSE, fig.align ="center", fig.dim = c(7.5,8), fig.cap="Heatmaps of the $\boldsymbol{U}$ matrices of an instance of a tumor under positive selection (top) and neutral evolution (bottom)."}
+# Function to create the heatmap of the U matrix
 U_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "clones", "proportion")){
   Upos <-melt(U)
   colnames(Upos) <- col_names
   Var1 <- col_names[1]
-  Upos<-ggplot(Upos, aes(x=samples, y=clones, fill=proportion)) + geom_tile(col="black") +# theme_bw()    +    
+  Upos<-ggplot(Upos, aes(x = samples, y = clones, fill = proportion)) + geom_tile(col = "black") +    
     theme(
-         panel.background = element_rect(fill='transparent'),
-         plot.background = element_rect(fill='transparent', color=NA),
+         panel.background = element_rect(fill = 'transparent'),
+         plot.background = element_rect(fill = 'transparent', color = NA),
          panel.grid.major = element_blank(),
          panel.grid.minor = element_blank(),
-         legend.background = element_rect(fill='transparent'),
-         legend.box.background = element_rect(fill='transparent')
-    ) + scale_fill_gradient(limits=c(0.0000000000001, 1)) + theme(axis.title.x=element_blank(),
-        axis.ticks.x=element_blank(), 
-        axis.title.y=element_blank(),
-        axis.ticks.y=element_blank())
+         legend.background = element_rect(fill = 'transparent'),
+         legend.box.background = element_rect(fill = 'transparent')
+    ) + scale_fill_gradient(limits = c(0.0000000000001, 1)) + theme(axis.title.x = element_blank(),
+        axis.ticks.x = element_blank(), 
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank())
   if(values){
-    Upos <- Upos + geom_text(aes(label=proportion), size=4)  
-  }
-  Upos
-}
-
-F_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "mutations", "VAF")){
-  Upos <-melt(U)
-  colnames(Upos) <- col_names
-  Var1 <- col_names[1]
-  Upos<-ggplot(Upos, aes(x=samples, y=mutations, fill=VAF)) + geom_tile(col="black")+    
-    theme(
-         panel.background = element_rect(fill='transparent'),
-         plot.background = element_rect(fill='transparent', color=NA),
-         panel.grid.major = element_blank(),
-         panel.grid.minor = element_blank(),
-         legend.background = element_rect(fill='transparent'),
-         legend.box.background = element_rect(fill='transparent')
-    ) + scale_fill_gradient(limits=c(0.00000000000000000001, 1)) + theme(axis.title.x=element_blank(),
-        axis.ticks.x=element_blank(), 
-        axis.title.y=element_blank(),
-        axis.ticks.y=element_blank()) 
-  if(values){
-    Upos <- Upos + geom_text(aes(label=round(VAF, digits = 2)), size=4)  
-  }
-  Upos
-}
-```
-
-```{r, message = FALSE, eval = FALSE}
-# Function to plot heatmap of the U matrix
-U_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "clones", "proportion")) {
-  Upos <- melt(U)
-  colnames(Upos) <- col_names
-  Var1 <- col_names[1]
-  Upos<-ggplot(Upos, aes(x = samples, y = clones, fill = proportion)) + geom_tile(col = "black") 
-         +  theme(
-            panel.background = element_rect(fill = 'transparent'),
-            plot.background = element_rect(fill = 'transparent', color = NA),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            legend.background = element_rect(fill = 'transparent'),
-            legend.box.background = element_rect(fill = 'transparent')) 
-         +  scale_fill_gradient(limits = c(0.0000000000001, 1)) + theme(axis.title.x = element_blank(),
-            axis.ticks.x = element_blank(), 
-            axis.title.y = element_blank(),
-            axis.ticks.y = element_blank())
-  if (values) {
     Upos <- Upos + geom_text(aes(label = proportion), size = 4)  
   }
   Upos
 }
 
-
-# Simulate a tumor with positive selection:
-Ipos <- create_instance(n = 5, m = 8, k = 0.5, selection = "positive")
-
-# Simulate a tumor with neutral evolution:
-Ineu <- create_instance(n = 5, m = 8, k = 0.5, selection = "neutral")
-
-# Plot the heatmaps of the U matrices of the instances:
-U_to_heatmap(Ipos$U)
-U_to_heatmap(Ineu$U)
-```
-
-```{r, message = FALSE, echo = FALSE,  warning = FALSE, fig.align ="center", fig.dim = c(7.5,8), fig.cap="Heatmaps of the $\boldsymbol{U}$ matrices of an instance of a tumor under positive selection (top) and neutral evolution (bottom)."}
 # simulate a tumor with neutral selection:
-Ipos <- create_instance(n=5, m=8, k=0.5, selection="positive", seed = 1)
+Ipos <- create_instance(n = 5, m = 8, k = 0.5, selection = "positive", seed = 1)
 
 # simulate a tumor with positive selection:
-Ineu <- create_instance(5,8,0.5,"neutral", seed = 1)
+Ineu <- create_instance(n = 5, m = 8, k = 0.5, selection = "neutral", seed = 1)
 
 Upos <- U_to_heatmap(Ipos$U)
 Uneu <- U_to_heatmap(Ineu$U)
 
-ggarrange(plotlist = list(Upos , Uneu), ncol = 1, nrow = 2)
+ggarrange(plotlist = list(Upos, Uneu), ncol = 1, nrow = 2)
 ```
 
 In that figure, we may see that in the tumor instance that evolves under neutral evolution, the majority of clones are present in all the samples, with only a few exceptions. Most of the clones have fraction values between 0.05 and 0.4. Conversely, the biggest fraction of the tumor instance under positive selection is taken by a few clones, in particular, by clone 3, and by clones 1 and 2 in a lower proportion. In addition, more clones than in the neutral evolution instance are absent; for instance, clone 5 is even missing in all the samples.
@@ -215,17 +137,32 @@ Once we have analyzed the difference between the neutral evolution and positive 
 
 Down below we compare an instance we have added sequencing noise to, with its noise-free counterpart.
 
-```{r, message = FALSE, eval = FALSE, warning = FALSE, fig.align ="center", fig.dim = c(7.5,8), fig.cap="caption"}
-# Simulate a tumor with sequencing noise added:
-Inoisy <- create_instance(n = 5, m = 8, k = 0.5, selection = "neutral", noisy = TRUE, depth = 5)
+```{r, message = FALSE, echo = TRUE, warning = FALSE, fig.align ="center", fig.dim = c(7.5, 4), fig.cap="The effect of noise."}
+# Function to create a heatmap of F
+F_to_heatmap <- function(U, values = TRUE, col_names = c("samples", "mutations", "VAF")){
+  Upos <-melt(U)
+  colnames(Upos) <- col_names
+  Var1 <- col_names[1]
+  Upos<-ggplot(Upos, aes(x = samples, y = mutations, fill = VAF)) + geom_tile(col = "black") +    
+    theme(
+         panel.background = element_rect(fill = 'transparent'),
+         plot.background = element_rect(fill = 'transparent', color = NA),
+         panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank(),
+         legend.background = element_rect(fill = 'transparent'),
+         legend.box.background = element_rect(fill = 'transparent')
+    ) + scale_fill_gradient(limits = c(0.00000000000000000001, 1)) + theme(axis.title.x = element_blank(),
+        axis.ticks.x = element_blank(), 
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank()) 
+  if (values) {
+    Upos <- Upos + geom_text(aes(label = round(VAF, digits = 2)), size = 4)  
+  }
+  Upos
+}
 
-# Show the heatmaps of the difference between the F and F_true matrices
-F_to_heatmap(abs(Inoisy$F - Inoisy$F_true))
-```
-
-```{r, message = FALSE, echo = FALSE, warning = FALSE, fig.align ="center", fig.dim = c(7.5, 4), fig.cap="The effect of noise."}
 # Simulate a tumor with sequencing noise added:
-Inoisy <- create_instance(5,8,0.5,"neutral",noisy = TRUE,depth = 5, seed = 1)
+Inoisy <- create_instance(m = 5, n = 8, k = 0.5, selection = "neutral", noisy = TRUE, depth = 5, seed = 1)
 
 Fnoise <- F_to_heatmap(abs(Inoisy$F - Inoisy$F_true))
 
@@ -234,37 +171,9 @@ ggarrange(Fnoise)
 
 The heatmap from above shows the difference between the $\boldsymbol{F}$ matrix and the $\boldsymbol{F_{true}}$ matrix of a tumor instance, i.e. the noise added to the original VAF values of our samples. The amount of noise added is controlled by the depth parameter, which replicates the effect that the sequencing depth has on the noise level. This is explained in more detail in the following subsection.
 
-### Sequencing read depth
+Finally, the `depth` parameter represents the sequencing read depth, that is, the average number of reads that map to the same locus (section of the genome). Therefore, the higher the sequencing depth, the most accurate the VAF values and thus, the lower the noise will be.
 
-The sequencing read depth is the average number of reads that map to the same locus (section of the genome). Therefore, the higher the sequencing depth, the most accurate the VAF values and thus, the lower the noise will be.
-
-See the evolution of the produced noise-error for simulations with different depth values below. The first animation below presents the progression of the error for two tumors composed by 10 clones and 2 samples, considering positive selection and neutral evolution. Contrarily, the second animation shows the progression of the error for two tumors (again with positive selection and neutral evolution) with 100 clones and 10 samples.
-
-
-```{r, echo = FALSE, out.width="100%", caption = "The evolution of the error in VAF values for a tumor composed by 10 clones and 2 samples."}
-
-anim_1 <- system.file("extdata", "anim_10_2.gif", package = "GeRnika")
-
-knitr::include_graphics(c(anim_1), dpi=300)
-```
-<center>
-The evolution of the error in VAF values based on the read depth sequencing values for a tumor composed by 10 clones and 2 samples.
-</center>
-
-```{r, echo = FALSE, out.width="100%", caption = "The evolution of the error in VAF values for a tumor composed by 100 clones and 10 samples."}
-
-anim_2 <- system.file("extdata", "anim_100_10.gif", package = "GeRnika")
-
-knitr::include_graphics(c(anim_2), dpi=300)
-```
-
-<center>
-The evolution of the error in VAF values based on the read depth sequencing values for tumors composed by 100 clones and 10 samples.
-</center>
-
-Note that the error decreases as depth values get higher, whether they follow a neutral evolution or a positive selection. In addition, the error of bigger tumors converges to values near 0 faster than the error of smaller ones. However, the first animation shows that, even if the smaller tumor needs higher values of depth to converge, it ends up producing minor errors.
-
-After analyzing the different parameters for simulating tumor clonal data, we will present the basis of the `Phylotree` S4 class.
+After analyzing the parameters for simulating tumor clonal data, we will present the basis of the `Phylotree` S4 class.
 
 # The `Phylotree` S4 class
 
@@ -272,22 +181,7 @@ In this section, we will be using the `Phylotree` class for the purpose of visua
 
 ## Structure of `Phylotree` class objects
 
-As every S4 R class, the `Phylotree` class is composed of various attributes that are essential for building a tumor phylogenetic tree in an eficient way.
-
-The attributes of `Phylotree` class may be visualized in the following table:
-
-| Parameter        | Description                                                | Type |
-| ---------------- | ---------------------------------------------------------- | ----------------- |
-| B                | Binary square matrix containing the mutations of each clone in the tumor                                        |  Matrix |
-| clones                | Clones in the $\boldsymbol{B}$ matrix of the tumor                                          |  Vector |
-| genes                | Genes that have mutated according to the $\boldsymbol{B}$ matrix of the tumor                                |  Vector      |
-| parents        | Parents of the clones in the phylogenetic tree | Vector
-| tree            | Structure that represents the phylogenetic tree | `Node` |
-| labels | Tags of the genes in the phylogenetic tree                    |  Vector |
-
-Beware that the users of this package will not need to manipulate all the parameters of the `Phylotree` class as some of these exist only to reduce the computational cost of the visualization of phylogenetic trees and their comparison.
-
-Once we have explained the structure of `Phylotree` class objects, we will proceed to show the different ways for instantiating them.
+As every S4 R class, the `Phylotree` class is composed of various attributes that are essential for building a tumor phylogenetic tree in an eficient way. Beware that the users of this package will not need to manipulate the parameters of the `Phylotree` class as some of these exist only to reduce the computational cost of the visualization of phylogenetic trees and their comparison.
 
 ## Instantiation of `Phylotree` class objects
 
@@ -295,21 +189,14 @@ The mutations of each clone in a tumor sample are represented in an `n` x `n` bi
 
 Now, we will show an example of the instantiation of a `Phylotree` class object:
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 # Simulate a tumor with 5 clones, 4 samples, k=0.5:
-instance <- create_instance(n = 5, m = 4, k = 0.5, selection = "positive", noisy = FALSE)
+instance <- create_instance(n = 5, m = 4, k = 0.5, selection = "neutral", noisy = FALSE, seed = 1)
 
 # The creation of the Phylotree class object using the previously generated B matrix:
 phylotree <- B_to_phylotree(B = instance$B)
 ```
 
-```{r, echo = FALSE}
-# Simulate a tumor with 5 clones, 4 samples, k=0.5:
-instance <- create_instance(n=5, m=4, k=0.5, selection="positive", noisy=FALSE, seed = 1)
-
-# The creation of the Phylotree class object using the previously generated B matrix:
-phylotree <- B_to_phylotree(B=instance$B)
-```
 
 The `B_to_phylotree` method takes the $\boldsymbol{B}$ matrix of a tumor simulation as its main argument and calculates the values for the other attributes present in `Phylotree` class objects. After instantiating the new `Phylotree` object, we can visualize it using the generic `plot` method for this class:
 
@@ -335,16 +222,15 @@ After creating the `Phylotree` class object, we may render it with the custom la
 plot(phylotree, labels = TRUE)
 ```
 
-
-This is one of the possible methods for instantiating `Phylotree` class objects on the basis of the $\boldsymbol{B}$ matrix of a tumor. However, this package also grants the option of using the general constructor for the `Phylotree` S4 class for instantiating new `Phylotree` objects, which allows users to give custom values to the attributes of a new `Phylotree` class object.
+Users are encouraged to use only the `B_to_phylotree` method for instantiating `Phylotree` class objects, as the parameters of the class must fulfill various restrictions to work properly.
 
 ## Resizing nodes to clone proportions
 
 When plotting a `Phylotree` class object, its nodes can be resized according to some given proportions of the clones that compose the tumor samples. To do this, the `plot_proportions` function takes a `phylotree` class object and an additional $\boldsymbol{U}$ matrix determining the proportions of the clones.
 
-```{r, eval=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions. In this case, there are 4 plots because we have generated an instance based on 4 samples. Then, each tree represents the proportions of the clones in each sample."}
+```{r, eval=TRUE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions. In this case, there are 4 plots because we have generated an instance based on 4 samples. Then, each tree represents the proportions of the clones in each sample."}
 # Simulate a tumor
-instance <- create_instance(n = 5,m = 4, k = 0.5, selection = "neutral", noisy = FALSE)
+instance <- create_instance(n = 5, m = 4, k = 0.5, selection = "neutral", noisy = FALSE, seed = 1)
 
 # Use the B matrix to instantiate a Phylotree class object
 tree <- B_to_phylotree(B = instance$B)
@@ -353,25 +239,13 @@ tree <- B_to_phylotree(B = instance$B)
 plot_proportions(tree, instance$U)
 ```
 
-```{r, echo=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions. In this case, there are 4 plots because we have generated an instance based on 4 samples. Then, each tree represents the proportions of the clones in each sample."}
-# Simulate a tumor
-instance <- create_instance(5, 4, 0.5, selection="neutral", noisy=FALSE, seed=1)
-
-#Use the B matrix of the previously generated tumor for creating a Phylotree class object
-tree<-B_to_phylotree(instance$B)
-
-#Plot the phylogenetic tree using the U matrix of the previously generated tumor
-plot_proportions(tree, instance$U)
-
-```
-
 Again, in this case we can also use custom labels for the nodes:
 
-```{r, eval=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions and tags."}
+```{r, eval=TRUE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions and tags."}
 tags <- c("A", "B", "C", "D", "E")
 
 # Simulate a tumor
-instance <- create_instance(n = 5, m = 4, k = 0.5, selection = "neutral", noisy = FALSE)
+instance <- create_instance(n = 5, m = 4, k = 0.5, selection = "neutral", noisy = FALSE, seed = 1)
 
 # Use the B matrix of the previously generated tumor for creating a Phylotree class object
 tree<-B_to_phylotree(B = instance$B, labels = tags)
@@ -380,18 +254,6 @@ tree<-B_to_phylotree(B = instance$B, labels = tags)
 plot_proportions(tree, instance$U, labels = TRUE)
 ```
 
-```{r, echo=FALSE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions and tags."}
-tags <- c("A", "B", "C", "D", "E")
-
-#simulate a tumor
-instance <- create_instance(5, 4, 0.5, "neutral", TRUE, seed=1)
-
-#Use the B matrix of the previously generated tumor for creating a Phylotree class object
-tree<-B_to_phylotree(instance$B, labels=tags)
-
-#Plot the phylogenetic tree using the U matrix of the previously generated tumor
-plot_proportions(tree, instance$U, labels=TRUE)
-```
 
 Note that the `proportions` parameter can be a matrix or a vector. If a matrix is given to the function, this method will generate one plot per row in the matrix. Conversely, if a vector is given, a single plot will be generated. 
 
@@ -409,34 +271,8 @@ These matrices are based on the solution of various instances of the Clonal Deco
 
 The example below loads and plots the 3 $\boldsymbol{B}$ matrices of an instance in `B_mats`:
 
-```{r fig.align ="center", out.width="-1.5in",eval = FALSE, message = FALSE, warning = FALSE}
-# Load the predefined B matrices of the package:
-B_mats <- GeRnika::B_mats
 
-# Get the 3 B matrices from B_mats for comparing them:
-B_real <- B_mats[[2]]$B_real
-B_grasp <- B_mats[[2]]$B_grasp
-B_opt <- B_mats[[2]]$B_opt
-
-# Create the vector of labels for the clones that compose the phylogenetic trees:
-tags <- c("mut1", "mut2", "mut3", "mut4", "mut5", "mut6", 
-            "mut7", "mut8", "mut9", "mut10")
-
-# Create the Phylotree class objects using the previously loaded B matrices:
-phylotree_real <- B_to_phylotree(B = B_real, labels = tags)
-phylotree_grasp <- B_to_phylotree(B = B_grasp, labels = tags)
-phylotree_opt <- B_to_phylotree(B = B_opt, labels = tags)
-
-
-# Render all trees:
-plot(phylotree_real)
-plot(phylotree_grasp)
-plot(phylotree_opt)
-
-```
-
-
-```{r fig.align ="center", echo = FALSE, fig.dim = c(8,8.75)}
+```{r fig.align ="center", echo = TRUE, fig.dim = c(8,8.75)}
 # Load the predefined B matrices of the package:
 B_mats <- GeRnika::B_mats
 
@@ -593,7 +429,7 @@ The consensus tree between `phylotree_real` and `phylotree_opt` using tags and a
 
 This is the information of the system this document was compiled on:
 
-```{r, echo = FALSE}
+```{r, echo = TRUE}
 sessionInfo(package = NULL)
 ```
 

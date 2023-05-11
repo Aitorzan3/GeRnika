@@ -35,7 +35,6 @@ knitr::opts_chunk$set(
 library(GeRnika)
 library(ggpubr)
 library(knitr)
-
 set.seed(1)
 ```
 
