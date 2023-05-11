@@ -1,7 +1,7 @@
 Package: GeRnika
 Type: Package
 Title: Simulation, visualization and comparison of tumor evolution data.
-Version: 0.99.0
+Version: 1.0.0
 Authors@R: person("Aitor", "Sánchez Ferrera", email="aitor.sanchezf@ehu.eus", role=c("cre", "aut"), comment = c(ORCID = "0000-0001-6127-0686"))
 Author: Aitor Sánchez Ferrera [aut, cre]
 Maintainer: Aitor Sánchez Ferrera <aitor.sanchezf@ehu.eus>
