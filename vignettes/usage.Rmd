@@ -2,7 +2,12 @@
 title: "Usage of GeRnika"
 author: "Aitor Sánchez, Maitena Tellaetxe and Borja Calvo"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  html_document:
+    fig_caption: yes
+    number_sections: no
+    toc: yes
+    toc_depth: 4
 vignetteBuilder: knitr
 vignette: >
   %\VignetteIndexEntry{Usage of GeRnika}
@@ -64,7 +69,7 @@ Once we have shown an example of the instantiation of a tumor, we will analyze t
 `k` is the parameter that controls for the linearity of the topology of the tumor. As a result, increasing values of `k` lead to rather branched phylogenies, while lower values of `k` produce trees that tend to linearity.
 
 
-```{r, message = FALSE, warning = FALSE, fig.align ="center", fig.dim = c(6.5,6), fig.cap="On the left the plot of `tree1` (`k=0`), on the right the plot of `tree2` (`k=8`)." }
+```{r, message = FALSE, warning = FALSE,  out.width="8.25in", fig.align ="center", fig.dim = c(6.5,6), fig.cap="On the left the plot of `tree1` (`k=0`), on the right the plot of `tree2` (`k=8`)." }
 # Simulate a tumor with k=0:
 I1 <- create_instance(n = 5, m = 4, k = 0, selection = "neutral", seed = 1)
 
@@ -177,11 +182,7 @@ After analyzing the parameters for simulating tumor clonal data, we will present
 
 # The `Phylotree` S4 class
 
-In this section, we will be using the `Phylotree` class for the purpose of visualizing phylogenetic trees on the basis of simulated tumor clonal data. The `Phylotree` S4 class is a structure that provides facilities for constructing tumor phylogenetic trees. We will now show the composition of `Phylotree` class objects and the method for instantiating them.
-
-## Structure of `Phylotree` class objects
-
-As every S4 R class, the `Phylotree` class is composed of various attributes that are essential for building a tumor phylogenetic tree in an eficient way. Beware that the users of this package will not need to manipulate the parameters of the `Phylotree` class as some of these exist only to reduce the computational cost of the visualization of phylogenetic trees and their comparison.
+In this section, we will be using the `Phylotree` class for the purpose of visualizing phylogenetic trees on the basis of simulated tumor clonal data. The `Phylotree` S4 class is a structure that provides facilities for constructing tumor phylogenetic trees. As every S4 R class, the `Phylotree` class is composed of various attributes that are essential for building a tumor phylogenetic tree in an eficient way. Beware that the users of this package will not need to manipulate the parameters of the `Phylotree` class as some of these exist only to reduce the computational cost of the visualization of phylogenetic trees and their comparison.
 
 ## Instantiation of `Phylotree` class objects
 
@@ -200,7 +201,7 @@ phylotree <- B_to_phylotree(B = instance$B)
 
 The `B_to_phylotree` method takes the $\boldsymbol{B}$ matrix of a tumor simulation as its main argument and calculates the values for the other attributes present in `Phylotree` class objects. After instantiating the new `Phylotree` object, we can visualize it using the generic `plot` method for this class:
 
-```{r , out.width="7.15in", fig.cap="Phylogenetic tree composed by 5 nodes."}
+```{r , out.width="8.5in", fig.align="center", fig.cap="Phylogenetic tree composed by 5 nodes."}
 plot(phylotree)
 ```
 
@@ -217,7 +218,7 @@ phylotree <- B_to_phylotree(B = instance$B, labels = tags)
 After creating the `Phylotree` class object, we may render it with the custom labels in the following way:
 
 
-```{r,  out.width="7.15in", fig.cap="Phylogenetic tree of 5 clones with custom tags. The tags in the vector are assigned to the nodes in the tree according to their order. For instance, the first clone in the previous plot is now represented with the first label of the tag vector `mut1`."}
+```{r,  out.width="8.5in", fig.align="center",fig.cap="Phylogenetic tree of 5 clones with custom tags. The tags in the vector are assigned to the nodes in the tree according to their order. For instance, the first clone in the previous plot is now represented with the first label of the tag vector `mut1`."}
 
 plot(phylotree, labels = TRUE)
 ```
@@ -228,7 +229,7 @@ Users are encouraged to use only the `B_to_phylotree` method for instantiating `
 
 When plotting a `Phylotree` class object, its nodes can be resized according to some given proportions of the clones that compose the tumor samples. To do this, the `plot_proportions` function takes a `phylotree` class object and an additional $\boldsymbol{U}$ matrix determining the proportions of the clones.
 
-```{r, eval=TRUE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions. In this case, there are 4 plots because we have generated an instance based on 4 samples. Then, each tree represents the proportions of the clones in each sample."}
+```{r, eval=TRUE,  out.width="9.5in", fig.align='center', fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions. In this case, there are 4 plots because we have generated an instance based on 4 samples. Then, each tree represents the proportions of the clones in each sample."}
 # Simulate a tumor
 instance <- create_instance(n = 5, m = 4, k = 0.5, selection = "neutral", noisy = FALSE, seed = 1)
 
@@ -241,7 +242,7 @@ plot_proportions(tree, instance$U)
 
 Again, in this case we can also use custom labels for the nodes:
 
-```{r, eval=TRUE, fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions and tags."}
+```{r, eval=TRUE,  out.width="9.5in", fig.align='center', fig.dim = c(7.5,5), fig.cap="Phylogenetic tree of 5 clones using proportions and tags."}
 tags <- c("A", "B", "C", "D", "E")
 
 # Simulate a tumor
@@ -272,7 +273,7 @@ These matrices are based on the solution of various instances of the Clonal Deco
 The example below loads and plots the 3 $\boldsymbol{B}$ matrices of an instance in `B_mats`:
 
 
-```{r fig.align ="center", echo = TRUE, fig.dim = c(8,8.75)}
+```{r fig.align ="center", out.width="9.5in", fig.align='center', echo = TRUE, fig.dim = c(8,8.75)}
 # Load the predefined B matrices of the package:
 B_mats <- GeRnika::B_mats
 
@@ -325,7 +326,7 @@ Nevertheless, even though two trees may not be equal, they may have common subtr
 
 The `find_common_subtrees` function calculates and plots all the maximal common subtrees between two phylogenetic trees. Moreover, it also outputs the number of common and independent (the ones not shared by both trees) edges of the trees. Finally, the method outputs the distance between the trees, which is computed as the sum of their independent edges.
 
-```{r fig.align ="center",  out.width = "7.25in"}
+```{r fig.align ="center",  out.width="9.5in", fig.align='center'}
 find_common_subtrees(phylotree_1 = phylotree_real, phylotree_2 = phylotree_grasp)
 ```
 <center>
@@ -333,7 +334,7 @@ The maximal common subtrees between `phylotree_real` and `phylotree_grasp`.
 </center>
 
 
-```{r fig.align ="center", fig.dim = c(6,4), out.width = "7.25in"}
+```{r fig.align ="center", fig.dim = c(6,4), out.width="9.5in", fig.align='center'}
 find_common_subtrees(phylotree_1 = phylotree_real, phylotree_2 = phylotree_opt)
 ```
 <center>
@@ -345,7 +346,7 @@ We observe that there are two maximal common subtrees between `phylotree_real` a
 As before, we can add custom labels to the trees that result from this function call:
 
 
-```{r fig.align ="center", fig.dim = c(6,4), out.width = "7.25in"}
+```{r out.width="9.5in", fig.align='center',fig.dim = c(6,4)}
 find_common_subtrees(phylotree_1 = phylotree_real, phylotree_2 = phylotree_grasp, labels = TRUE)
 ```
 <center>
@@ -353,7 +354,7 @@ The maximal common subtrees between `phylotree_real` and `phylotree_grasp` label
 </center>
 
 
-```{r fig.align ="center", fig.dim = c(6,4), out.width = "7.25in"}
+```{r out.width="9.5in", fig.align='center', fig.dim = c(6,4)}
 find_common_subtrees(phylotree_1 = phylotree_real, phylotree_2 = phylotree_opt, labels = TRUE)
 ```
 
@@ -385,7 +386,7 @@ consensus_real_opt <- combine_trees(phylotree_1 = phylotree_real, phylotree_2 = 
 
 The consensus tree can be plotted by using the function `render_graph` of the `DiagrammeR` R package.
 
-```{r fig.align ="center", fig.dim = c(7,8), out.width = "7.5in", warning=FALSE}
+```{r fig.align ="center", fig.dim = c(7,8),out.width="9.5in", fig.align='center', warning=FALSE}
 # Rendering the consensus between phylotree_real and phylotree_grasp
 render_graph(consensus_real_grasp)
 
@@ -395,7 +396,7 @@ render_graph(consensus_real_grasp)
 The consensus tree between `phylotree_real` and `phylotree_grasp`.
 </center>
 
-```{r, out.width="47.5%", fig.dim = c(5,6), out.width = "7.5in", warning=FALSE}
+```{r,  fig.dim = c(5,6), out.width="9.5in", fig.align='center', warning=FALSE}
 # Rendering the consensus between phylotree_real and phylotree_opt
 render_graph(consensus_real_opt)
 ```
@@ -408,7 +409,7 @@ The above figures present the consensus tree between `phylotree_real` and `phylo
 
 Users can customize both the labels and the colors of the nodes. The latter can be done by providing a custom palette --a vector containing the hexadecimal code of various colors-- of 3 elements such as `c("#AAAAAAAA","#BBBBBBBB","#CCCCCCCC")`. Additionally, the user can use one of the color palettes included in GeRnika: *Lancet*, *NEJM* and *Simpsons* (default). 
 
-```{r fig.align ="center", fig.height = 5, fig.width = 6 , out.width = "7in"}
+```{r fig.align ="center", fig.height = 5, fig.width = 6, out.width="9.5in", fig.align='center',}
 # Load one of the default palettes of the package:
 palette <- GeRnika::palettes$Lancet
 

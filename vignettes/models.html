@@ -352,7 +352,7 @@ display: none;
 <h1 class="title toc-ignore">Simulation of tumor clonal data (advanced
 users)</h1>
 <h4 class="author">Aitor Sánchez, Maitena Tellaetxe and Borja Calvo</h4>
-<h4 class="date">Last updated: 2023-05-11</h4>
+<h4 class="date">Last updated: 2023-05-15</h4>
 
 </div>
 
@@ -798,7 +798,7 @@ the second row corresponds to the children clones of
 #&gt;     }
 #&gt;     return(clone_proportions)
 #&gt; }
-#&gt; &lt;bytecode: 0x0000000015153e20&gt;
+#&gt; &lt;bytecode: 0x00000000151052a0&gt;
 #&gt; &lt;environment: namespace:GeRnika&gt;</code></pre>
 <p>To finish with the tumor model, the tumor blend is simulated,
 i.e. how physically mixed are the clones between them. For doing so, we
@@ -850,7 +850,7 @@ represent 1-dimensional projections of tumor clone masses.
 #&gt;     spatial_coords &lt;- y %&gt;% mutate(idx = x)
 #&gt;     return(list(spatial_coords = spatial_coords, x = x))
 #&gt; }
-#&gt; &lt;bytecode: 0x00000000232cdaa0&gt;
+#&gt; &lt;bytecode: 0x000000002302a968&gt;
 #&gt; &lt;environment: namespace:GeRnika&gt;</code></pre>
 <p>The user can vary, e.g., increase or decrease, fix to a certain
 value, the range of values <span class="math inline">\(d\)</span> can
@@ -934,7 +934,7 @@ function:</p>
 #&gt;     U &lt;- U[, order(as.numeric(gsub(&quot;clon&quot;, &quot;&quot;, colnames(U))))]
 #&gt;     return(U)
 #&gt; }
-#&gt; &lt;bytecode: 0x000000002375bb18&gt;
+#&gt; &lt;bytecode: 0x00000000234c0810&gt;
 #&gt; &lt;environment: namespace:GeRnika&gt;</code></pre>
 <p>The user can again play with this function according to their needs.
 They could, for instance, vary the sampling sites; for doing so, they
@@ -1109,7 +1109,7 @@ explained.</p>
 #&gt;     colnames(F_true) &lt;- mutation_names
 #&gt;     return(list(F = F, B = B, U = U, F_true = F_true))
 #&gt; }
-#&gt; &lt;bytecode: 0x00000000120913d0&gt;
+#&gt; &lt;bytecode: 0x0000000012102288&gt;
 #&gt; &lt;environment: namespace:GeRnika&gt;</code></pre>
 <p>We would like to make two final notes regarding the sequencing noise
 model. The first one is that, even if our simulated data procedure

@@ -218,13 +218,19 @@ combine_trees <- function(phylotree_1, phylotree_2, palette = GeRnika::palettes$
                                phylotree_1@parents[intersection][phylotree_1@parents[intersection] > 0]))
       inters1 <- select_nodes(tree1, conditions = (label %in% intersection))
       tree1 <- set_node_attrs_ws(inters1, node_attr = color, value = color_combined)
-      tree1 <- set_node_attrs_ws(invert_selection(select_nodes(tree1, conditions=(label %in% intersection))), 
-                                 node_attr = color, value = not_color)
-      tree1 <- set_node_attrs_ws(tree1, node_attr = fontcolor, value = "grey")
+      if(length(intersection) != length(phylotree_1@genes)) {
+        tree1 <- set_node_attrs_ws(invert_selection(select_nodes(tree1, conditions=(label %in% intersection))), 
+                                    node_attr = color, value = not_color)
+        tree1 <- set_node_attrs_ws(tree1, node_attr = fontcolor, value = "grey")
+      }
       inter_edges <- get_edge_ids(tree1)[which(get_edges(tree1, return_values = "label") 
                                                %in% get_edges(tree2, return_values = "label"))]
       inters <- select_edges_by_edge_id(tree1, inter_edges)
       tree1 <- set_edge_attrs_ws(inters, edge_attr = color, value = color_combined)
+    }
+    else {
+      tree1 <- set_node_attrs_ws(select_nodes(tree1), node_attr = color, value = not_color)
+      tree1 <- set_node_attrs_ws(tree1, node_attr = fontcolor, value = "grey")
     }
     edges2 <- get_edges(tree2, return_values = "label")[which(!(get_edges(tree2, return_values = "label") 
                                                                 %in% get_edges(tree1, return_values ="label")))]
