@@ -16,7 +16,7 @@ Suggests: knitr, rmarkdown, knitcitations, ggpubr, ggplot2
 NeedsCompilation: no
 LazyData: TRUE
 License: GPL (>= 3)
-Packaged: 2024-11-03 20:26:36 UTC; aitor
+Packaged: 2025-03-27 18:34:48 UTC; aitor
 Author: Aitor Sánchez-Ferrera [cre, aut]
     (<https://orcid.org/0000-0001-6127-0686>),
   Maitena Tellaetxe-Abete [aut] (<https://orcid.org/0000-0003-1894-4547>),
