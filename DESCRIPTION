@@ -1,0 +1,26 @@
+Package: GeRnika
+Type: Package
+Title: Simulation, Visualization and Comparison of Tumor Evolution Data
+Version: 1.1.0
+Authors@R: c(person("Aitor", "Sánchez-Ferrera", email="aitor.sanchezf@ehu.eus", role=c("cre", "aut"), comment = c(ORCID = "0000-0001-6127-0686")),
+             person("Maitena", "Tellaetxe-Abete", role="aut", comment = c(ORCID="0000-0003-1894-4547")),
+             person("Borja", "Calvo", role="aut", comment = c(ORCID="0000-0001-9969-9664")))
+Description: Simulating, visualizing and comparing tumor clonal data by using simple commands. This aims at providing a tool to help researchers to easily simulate tumor data and analyze the results of their approaches for studying the composition and the evolutionary history of tumors.
+Encoding: UTF-8
+Imports: data.tree, purrr, reshape2, DiagrammeR, colorspace, dplyr,
+        methods, vctrs, magrittr, stats
+Depends: R (>= 4.00)
+RoxygenNote: 7.3.2
+VignetteBuilder: knitr, rmarkdown, knitcitations, ggpubr, ggplot2
+Suggests: knitr, rmarkdown, knitcitations, ggpubr, ggplot2
+NeedsCompilation: no
+LazyData: TRUE
+License: GPL (>= 3)
+Packaged: 2025-03-27 18:34:48 UTC; aitor
+Author: Aitor Sánchez-Ferrera [cre, aut]
+    (<https://orcid.org/0000-0001-6127-0686>),
+  Maitena Tellaetxe-Abete [aut] (<https://orcid.org/0000-0003-1894-4547>),
+  Borja Calvo [aut] (<https://orcid.org/0000-0001-9969-9664>)
+Maintainer: Aitor Sánchez-Ferrera <aitor.sanchezf@ehu.eus>
+Repository: CRAN
+Date/Publication: 2024-09-04 13:30:09 UTC
